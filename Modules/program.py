@@ -14,21 +14,55 @@ commands = 10
 class Program(pygame.Surface):
     def __init__(self, s=size, pos=position):
         pygame.Surface.__init__(self, s)
+        self.page_prev = Command("prev_page", command.location + "prev_page" + command.expansion, (0, command.height))
+        self.page_next = Command("next_page", command.location + "next_page" + command.expansion,
+                                 (size[0] - command.width, command.height))
         self.group = pygame.sprite.Group()
+        self.listing = pygame.sprite.Group()
         self.program = []
         self.position = pos
         self.page = 0
+        self.max_page = 0
         self.deleted = ""
         self.init()
-        self.update()
 
     def init(self):
+
+        self.page_next.uncountable()
+        self.page_prev.uncountable()
+        self.page_next.update()
+        self.page_prev.update()
+
         self.update()
 
     def update(self):
         self.fill(color)
+
+        self.listing_control()
         self.group_up()
+
         self.group.draw(self)
+        listing = pygame.sprite.Group()
+        listing.add(self.page_next)
+        listing.add(self.page_prev)
+        listing.draw(self)
+
+    def listing_control(self):
+        self.max_page = int((len(self.program)-1) / 10)
+        if self.page < 0:
+            self.page = 0
+        if self.page > self.max_page:
+            self.page = self.max_page
+
+        if self.page == 0:
+            self.page_prev.fade_out()
+        if 0 < self.page:
+            self.page_prev.fade_in()
+        if self.page < self.max_page:
+            self.page_next.fade_in()
+        if self.page == self.max_page:
+            self.page_next.fade_out()
+
 
     def group_up(self):
         self.group = pygame.sprite.Group()
@@ -46,6 +80,7 @@ class Program(pygame.Surface):
     def event(self, mouse):
         self.deleted = ""
         if mouse.get_pressed()[0]:
+            # Press on command
             for i in self.group.sprites():
                 if i.collision(numpy.subtract(mouse.get_pos(), self.position)):
                     index = int((mouse.get_pos()[0] - command.width) / command.width)
@@ -54,6 +89,12 @@ class Program(pygame.Surface):
                         self.deleted = str(self.program[index])
                         self.delete(index)
                     break
+            # Press on listing
+            if self.page_next.collision(numpy.subtract(mouse.get_pos(), self.position)):
+                self.page += 1
+            if self.page_prev.collision(numpy.subtract(mouse.get_pos(), self.position)):
+                self.page -= 1
+
         self.update()
 
     def add(self, name):
