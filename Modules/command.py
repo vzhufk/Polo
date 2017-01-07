@@ -18,7 +18,7 @@ class Command(pygame.sprite.Sprite):
         self.original = self.image
         self.rect = Rect(placement[0], placement[1], self.rect[0] + self.rect[2],
                          self.rect[1] + self.rect[3])
-        self.font = font.font
+        self.font = font.heavy
         self.fade = False
         self.countable = True
         self.amount = 10

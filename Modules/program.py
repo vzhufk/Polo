@@ -1,13 +1,14 @@
 import numpy
 import pygame
 
+import font
 import varibles
 from Modules import command
 from Modules.command import Command
 
 position = (0, 0.75 * varibles.screen_resolution[1])
 size = (0.75 * varibles.screen_resolution[0], 0.25 * varibles.screen_resolution[1])
-color = (128, 32, 64)
+color = (200, 0, 0)
 commands = 10
 
 
@@ -17,8 +18,10 @@ class Program(pygame.Surface):
         self.page_prev = Command("prev_page", command.location + "prev_page" + command.expansion, (0, command.height))
         self.page_next = Command("next_page", command.location + "next_page" + command.expansion,
                                  (size[0] - command.width, command.height))
+        self.font = font.heavy
         self.group = pygame.sprite.Group()
         self.listing = pygame.sprite.Group()
+        self.listing_counter = self.font.render("1/0", 2, (0, 0, 0))
         self.program = []
         self.position = pos
         self.page = 0
@@ -27,7 +30,6 @@ class Program(pygame.Surface):
         self.init()
 
     def init(self):
-
         self.page_next.uncountable()
         self.page_prev.uncountable()
         self.page_next.update()
@@ -38,16 +40,14 @@ class Program(pygame.Surface):
     def update(self):
         self.fill(color)
 
-        self.listing_control()
-        listing = pygame.sprite.Group()
-        listing.add(self.page_next)
-        listing.add(self.page_prev)
-        listing.draw(self)
+        self.listing_update()
+        self.listing.draw(self)
+        self.blit(self.listing_counter, (size[0]/2, size[1]-25))
 
         self.group_up()
         self.group.draw(self)
 
-    def listing_control(self):
+    def listing_update(self):
         self.max_page = int((len(self.program)-1) / 10)
         if self.page < 0:
             self.page = 0
@@ -63,6 +63,11 @@ class Program(pygame.Surface):
         if self.page == self.max_page:
             self.page_next.fade_out()
 
+        self.listing = pygame.sprite.Group()
+        self.listing.add(self.page_next)
+        self.listing.add(self.page_prev)
+
+        self.listing_counter = self.font.render(""+str(self.page+1) + "/" + str(self.max_page+1)+"", 2, (255, 255, 255))
 
     def group_up(self):
         self.group = pygame.sprite.Group()
