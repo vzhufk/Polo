@@ -20,9 +20,10 @@ class Controls(pygame.Surface):
         self.update()
 
     def init(self):
-        left = Command("left", command.location + "left" + command.expansion, command.size)
-        right = Command("right", command.location + "right" + command.expansion, (command.width * 2, command.height))
-        front = Command("front", command.location + "front" + command.expansion, (command.width, command.height * 2))
+
+        right = Command("right", command.location + "right" + command.expansion, command.size)
+        left = Command("left", command.location + "left" + command.expansion, (command.width * 2, command.height))
+        front = Command("forward", command.location + "forward" + command.expansion, (command.width, command.height * 2))
         back = Command("back", command.location + "back" + command.expansion, (command.width * 2, command.height * 2))
 
         self.group.add(left)

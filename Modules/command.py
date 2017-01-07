@@ -1,7 +1,7 @@
 from pygame.rect import Rect
 
 from Libraries.load import *
-from Source.font import font, font_size
+import Source.font as font
 
 height = 50
 width = 50
@@ -18,7 +18,7 @@ class Command(pygame.sprite.Sprite):
         self.original = self.image
         self.rect = Rect(placement[0], placement[1], self.rect[0] + self.rect[2],
                          self.rect[1] + self.rect[3])
-        self.font = font
+        self.font = font.font
         self.countable = True
         self.amount = 10
         self.update()
@@ -34,7 +34,7 @@ class Command(pygame.sprite.Sprite):
             surf.blit(self.original, (0, 0))
         if self.countable:
             text = self.font.render(str(self.amount), 2, (0, 0, 0))
-            surf.blit(text, (self.rect.width - 1.5 * font_size, 0))
+            surf.blit(text, (self.rect.width - 1.5 * font.size, 0))
         self.image = surf.convert_alpha()
 
     def collision(self, position):
