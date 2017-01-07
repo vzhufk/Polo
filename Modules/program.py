@@ -39,13 +39,13 @@ class Program(pygame.Surface):
         self.fill(color)
 
         self.listing_control()
-        self.group_up()
-
-        self.group.draw(self)
         listing = pygame.sprite.Group()
         listing.add(self.page_next)
         listing.add(self.page_prev)
         listing.draw(self)
+
+        self.group_up()
+        self.group.draw(self)
 
     def listing_control(self):
         self.max_page = int((len(self.program)-1) / 10)
