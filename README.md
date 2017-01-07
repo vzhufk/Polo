@@ -7,4 +7,4 @@ You have robot, and some avaliable commands for him. Your target - program him, 
 # Now
 Just for now I have half ready controls and program module.
 Looks like this:
-![alt tag](http://i.imgur.com/fqZedHd.png)
+![alt tag](http://i.imgur.com/xinqsFf.png)
