@@ -8,7 +8,7 @@ from Modules.command import Command
 
 position = (0, 0.75 * varibles.screen_resolution[1])
 size = (0.75 * varibles.screen_resolution[0], 0.25 * varibles.screen_resolution[1])
-color = (200, 0, 0)
+color = [48, 63, 159]
 commands = 10
 
 

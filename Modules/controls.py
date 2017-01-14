@@ -7,7 +7,7 @@ from Modules.command import Command
 
 position = (0.75 * varibles.screen_resolution[0], 0.25 * varibles.screen_resolution[1])
 size = (0.25 * varibles.screen_resolution[0], 0.75 * varibles.screen_resolution[1])
-color = (32, 128, 64)
+color = (63, 81, 181)
 
 
 class Controls(pygame.Surface):
@@ -23,7 +23,8 @@ class Controls(pygame.Surface):
 
         right = Command("right", command.location + "right" + command.expansion, command.size)
         left = Command("left", command.location + "left" + command.expansion, (command.width * 2, command.height))
-        front = Command("forward", command.location + "forward" + command.expansion, (command.width, command.height * 2))
+        front = Command("forward", command.location + "forward" + command.expansion,
+                        (command.width, command.height * 2))
         back = Command("back", command.location + "back" + command.expansion, (command.width * 2, command.height * 2))
 
         self.group.add(left)
