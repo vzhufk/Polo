@@ -1,4 +1,5 @@
 import os
+import pickle
 import sys
 
 import pygame
@@ -20,12 +21,22 @@ class Engine:
         os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (0, 30)
         pygame.display.set_caption(window_title)
         self.display = pygame.display.set_mode(screen_resolution)
+        self.level = {}
         self.controls = Controls()
         self.program = Program()
 
-    def level(self, level_name=""):
-        # self.level_creator("first")
-        print("LEVEL LOAD")
+    def import_level(self, name):
+        file = open(name, 'rb')
+
+        self.level = pickle.load(file)
+
+    def export_level(self, name):
+        file = open(name, 'wb')
+
+        tmp = [['flor', (0, 0)],
+               ['flor', (0, 1)]]
+
+        pickle.dump(tmp, file)
 
     def blit(self):
         self.display.blit(self.controls, self.controls.position)
