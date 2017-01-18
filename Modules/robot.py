@@ -23,10 +23,10 @@ expansion = ".png"
 # 3 - left
 
 class Robot(pygame.sprite.Sprite):
-    def __init__(self, n=name, i_n=image_name, placement=(0, 0)):
+    def __init__(self, n=name, i_n=image_name, placement=(50, 50)):
         pygame.sprite.Sprite.__init__(self)
         self.name = n
-        self.image, self.rect = image(i_n, -1)
+        self.image, self.rect = image(location + i_n + expansion, -1)
         self.original = self.image
         self.rect = Rect(placement[0], placement[1], self.rect[0] + self.rect[2],
                          self.rect[1] + self.rect[3])
@@ -42,3 +42,6 @@ class Robot(pygame.sprite.Sprite):
     def turn_right(self):
         self.direction += 1
         self.direction %= 4
+
+    def update(self):
+        self.image = pygame.transform.rotate(self.original, self.direction * 90)

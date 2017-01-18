@@ -7,6 +7,7 @@ import pygame
 import varibles
 from Modules.controls import Controls
 from Modules.program import Program
+from scene import Scene
 
 FPS = varibles.FPS
 window_title = varibles.window_title
@@ -24,6 +25,7 @@ class Engine:
         self.level = {}
         self.controls = Controls()
         self.program = Program()
+        self.scene = Scene("demo")
 
     def import_level(self, name):
         file = open(name, 'rb')
@@ -41,6 +43,7 @@ class Engine:
     def blit(self):
         self.display.blit(self.controls, self.controls.position)
         self.display.blit(self.program, self.program.position)
+        self.display.blit(self.scene, self.scene.position)
 
     def event(self):
         for event in pygame.event.get():

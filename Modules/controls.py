@@ -26,11 +26,15 @@ class Controls(pygame.Surface):
         front = Command("forward", command.location + "forward" + command.expansion,
                         (command.width, command.height * 2))
         back = Command("back", command.location + "back" + command.expansion, (command.width * 2, command.height * 2))
+        lo = Command("lo", command.location + "lo" + command.expansion, (command.width, command.height * 3))
+        op = Command("op", command.location + "op" + command.expansion, (command.width * 2, command.height * 3))
 
         self.group.add(left)
         self.group.add(right)
         self.group.add(front)
         self.group.add(back)
+        self.group.add(lo)
+        self.group.add(op)
 
     def update(self):
         self.fill(color)

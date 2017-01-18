@@ -5,6 +5,8 @@
       <sourceFolder url="file://$MODULE_DIR$/Source" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Modules" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Libraries" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Levels" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/Demos" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.5.2 (E:\IDE\pythonIterpreter3.5\python.exe)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />

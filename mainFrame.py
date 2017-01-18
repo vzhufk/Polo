@@ -1,6 +1,6 @@
 import engine
 
 e = engine.Engine()
-e.export_level("demo")
-e.import_level("demo")
+e.export_level("Levels/demo")
+e.import_level("Levels/demo")
 e.run()
