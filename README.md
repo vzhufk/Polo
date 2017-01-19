@@ -13,3 +13,4 @@ Looks like this:
 Text : SF Orson Casual  
 Icons: icons8.com  
 pyGame: www.pygame.org/docs/  
+IDE: www.jetbrains.com/pycharm/   
