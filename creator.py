@@ -20,9 +20,13 @@ while run:
                 ">(0) Exit\n>")
 
     if int(say) == 1:
+        x = int(input(">Set x location\n>"))
+        y = int(input(">Set y location\n>"))
         name = input(">Set type of tile\n>")
-        x, y = input(">Set location\n>")
-        current.add_tile(name, (x, y))
+        if name == "":
+            current.add_tile((x, y))
+        else:
+            current.add_tile((x, y), name)
     elif int(say) == 2:
         name = input(">Set name of command\n>")
         amount = input(">Set amount\n")

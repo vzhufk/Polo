@@ -26,15 +26,15 @@ class Engine:
         self.level = Level("empty")
         self.controls = Controls()
         self.program = Program()
-        self.scene = Scene("Levels/demo")
+        self.scene = Scene()
 
     def load(self, name):
         self.level = Level(name)
         self.level.load()
 
         # SETUP
-        for i in self.level.moves.keys():
-            self.controls.set(i, self.level.moves[i])
+        self.controls.level(self.level)
+        self.scene.level(self.level)
 
     def blit(self):
         self.display.blit(self.controls, self.controls.position)

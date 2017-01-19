@@ -64,3 +64,7 @@ class Controls(pygame.Surface):
             if name == i.name:
                 i.set_amount(amount)
         self.update()
+
+    def level(self, lvl):
+        for i in lvl.moves.keys():
+            self.set(i, lvl.moves[i])

@@ -2,6 +2,7 @@
 # zhufyakvv@gmail.com
 # github.com/zhufyakvv
 # 19.01.2017
+import os
 import pickle
 
 import load
@@ -10,11 +11,15 @@ tile = (50, 50)
 image_expansion = ".png"
 location = "Levels/"
 expansion = ""
+tile_location = "Source/Tiles/"
+tile_default = "default"
+tile_expansion = ".png"
 
 
-class Tile:
+class RawTile:
     def __init__(self, kind, place):
         self.type = kind
+        self.location = tile_location + kind + tile_expansion
         self.place = place
 
 
@@ -36,11 +41,9 @@ class Level:
         pickle.dump(self.__dict__, f, 2)
         f.close()
 
-    def add_tile(self, name, place):
-        try:
-            tmp = load.image(name + image_expansion)
-        finally:
-            self.tiles.append(Tile(name, (place[0] / tile[0], place[1] / tile[1])))
+    def add_tile(self, place, name=tile_default):
+        if os.path.exists(tile_location + name + tile_expansion):
+            self.tiles.append(RawTile(name, (place[0] * tile[0], place[1] * tile[1])))
 
     def change_command(self, name, amount):
         self.moves[name] = int(amount)
