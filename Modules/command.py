@@ -21,7 +21,7 @@ class Command(pygame.sprite.Sprite):
         self.font = font.medium
         self.fade = False
         self.countable = True
-        self.amount = 10
+        self.amount = 0
         self.update()
 
     def update(self):
@@ -49,6 +49,7 @@ class Command(pygame.sprite.Sprite):
 
     def set_amount(self, amount):
         self.amount = amount
+        self.change_amount(0)
         self.update()
 
     def change_amount(self, dif):

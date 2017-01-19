@@ -58,3 +58,9 @@ class Controls(pygame.Surface):
             if name == i.name:
                 i.change_amount(1)
         self.update()
+
+    def set(self, name, amount):
+        for i in self.group:
+            if name == i.name:
+                i.set_amount(amount)
+        self.update()

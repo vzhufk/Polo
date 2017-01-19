@@ -7,6 +7,7 @@ import pygame
 import varibles
 from Modules.controls import Controls
 from Modules.program import Program
+from level import Level
 from scene import Scene
 
 FPS = varibles.FPS
@@ -22,23 +23,18 @@ class Engine:
         os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (0, 30)
         pygame.display.set_caption(window_title)
         self.display = pygame.display.set_mode(screen_resolution)
-        self.level = {}
+        self.level = Level("empty")
         self.controls = Controls()
         self.program = Program()
-        self.scene = Scene("demo")
+        self.scene = Scene("Levels/demo")
 
-    def import_level(self, name):
-        file = open(name, 'rb')
+    def load(self, name):
+        self.level = Level(name)
+        self.level.load()
 
-        self.level = pickle.load(file)
-
-    def export_level(self, name):
-        file = open(name, 'wb')
-
-        tmp = [['flor', (0, 0)],
-               ['flor', (0, 1)]]
-
-        pickle.dump(tmp, file)
+        # SETUP
+        for i in self.level.moves.keys():
+            self.controls.set(i, self.level.moves[i])
 
     def blit(self):
         self.display.blit(self.controls, self.controls.position)
