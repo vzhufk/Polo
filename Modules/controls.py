@@ -5,7 +5,7 @@ import varibles
 from Modules import command
 from Modules.command import Command
 
-position = (0.75 * varibles.screen_resolution[0], 0.25 * varibles.screen_resolution[1])
+position = (0.75 * varibles.screen_resolution[0], 0.75 * varibles.screen_resolution[1])
 size = (0.25 * varibles.screen_resolution[0], 0.75 * varibles.screen_resolution[1])
 color = (63, 81, 181)
 
@@ -21,13 +21,20 @@ class Controls(pygame.Surface):
 
     def init(self):
 
-        right = Command("right", command.location + "right" + command.expansion, command.size)
-        left = Command("left", command.location + "left" + command.expansion, (command.width * 2, command.height))
         front = Command("forward", command.location + "forward" + command.expansion,
-                        (command.width, command.height * 2))
-        back = Command("back", command.location + "back" + command.expansion, (command.width * 2, command.height * 2))
-        lo = Command("lo", command.location + "lo" + command.expansion, (command.width, command.height * 3))
-        op = Command("op", command.location + "op" + command.expansion, (command.width * 2, command.height * 3))
+                        (command.width / 2, command.height / 2))
+        back = Command("back", command.location + "back" + command.expansion, (command.width / 2, command.height / 2 +
+                                                                               command.height))
+
+        right = Command("right", command.location + "right" + command.expansion, (command.width / 2 + command.width,
+                                                                                  command.height / 2))
+        left = Command("left", command.location + "left" + command.expansion, (command.width / 2 + command.width,
+                                                                               command.height / 2 + command.height))
+
+        lo = Command("lo", command.location + "lo" + command.expansion, (command.width / 2 + 2 * command.width,
+                                                                         command.height / 2))
+        op = Command("op", command.location + "op" + command.expansion, (command.width / 2 + 2 * command.width,
+                                                                         command.height / 2 + command.height))
 
         self.group.add(left)
         self.group.add(right)
