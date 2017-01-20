@@ -27,16 +27,12 @@ class Command(pygame.sprite.Sprite):
     def update(self):
         surf = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
         if self.fade:
-            temp = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA).convert()
-            temp.blit(self.original, (0, 0))
-            temp.set_alpha(85)
-            surf.blit(temp, (0, 0))
-        else:
-            surf.blit(self.original, (0, 0))
+            surf.set_alpha(128)
+        surf.blit(self.original, (0, 0))
         if self.countable:
             text = self.font.render(str(self.amount), 2, (0, 0, 0))
-            surf.blit(text, (self.rect.width - 1.5 * font.size, 0))
-        self.image = surf.convert_alpha()
+            surf.blit(text, (self.rect.width - font.size, 0))
+        self.image = surf
 
     def collision(self, position):
         # CORRECTION

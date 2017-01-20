@@ -8,7 +8,9 @@ from Modules.command import Command
 
 position = (0, 0.75 * varibles.screen_resolution[1])
 size = (0.75 * varibles.screen_resolution[0], 0.25 * varibles.screen_resolution[1])
-color = [48, 63, 159]
+text_color = (0, 0, 0)
+color = (200, 200, 200)
+sec_color = (106, 106, 106)
 commands = 10
 
 
@@ -21,7 +23,7 @@ class Program(pygame.Surface):
         self.font = font.heavy
         self.group = pygame.sprite.Group()
         self.listing = pygame.sprite.Group()
-        self.listing_counter = self.font.render("1/0", 2, (0, 0, 0))
+        self.listing_counter = self.font.render("1/0", 2, text_color)
         self.program = []
         self.position = pos
         self.page = 0
@@ -39,6 +41,8 @@ class Program(pygame.Surface):
 
     def update(self):
         self.fill(color)
+        pygame.draw.rect(self, sec_color, (0, 0, command.width, size[1]))
+        pygame.draw.rect(self, sec_color, (size[0] - command.width, 0, size[0], size[1]))
 
         self.listing_update()
         self.listing.draw(self)
@@ -67,7 +71,8 @@ class Program(pygame.Surface):
         self.listing.add(self.page_next)
         self.listing.add(self.page_prev)
 
-        self.listing_counter = self.font.render(""+str(self.page+1) + "/" + str(self.max_page+1)+"", 2, (255, 255, 255))
+        self.listing_counter = self.font.render("" + str(self.page + 1) + "/" + str(self.max_page + 1) + "", 2,
+                                                text_color)
 
     def group_up(self):
         self.group = pygame.sprite.Group()

@@ -7,8 +7,8 @@ from Modules.command import Command
 
 position = (0.75 * varibles.screen_resolution[0], 0.75 * varibles.screen_resolution[1])
 size = (0.25 * varibles.screen_resolution[0], 0.75 * varibles.screen_resolution[1])
-color = (63, 81, 181)
-
+color = (183, 183, 183)
+sec_color = (106, 106, 106)
 
 class Controls(pygame.Surface):
     def __init__(self, s=size, pos=position):
