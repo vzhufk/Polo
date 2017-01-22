@@ -30,6 +30,8 @@ class Robot(pygame.sprite.Sprite):
         self.original = self.image
         self.rect = Rect(placement[0], placement[1], self.rect[0] + self.rect[2],
                          self.rect[1] + self.rect[3])
+        self.fx = float(self.rect.x)
+        self.fy = float(self.rect.y)
         self.font = font.medium
         self.direction = 2
         self.update()
@@ -43,5 +45,19 @@ class Robot(pygame.sprite.Sprite):
         self.direction += 1
         self.direction %= 4
 
+    # -1 <= percent <= 1
+    def move(self, percent):
+        if self.direction % 2 == 0:
+            self.fy += (1 if self.direction == 2 else -1) * height * percent
+            self.rect.y = int(self.fy)
+        else:
+            self.fx += (1 if self.direction == 1 else -1) * width * percent
+            self.rect.x = int(self.fx)
+
     def update(self):
-        self.image = pygame.transform.rotate(self.original, self.direction * 90)
+        self.image = pygame.transform.rotate(self.original, self.direction * -90)
+
+    def collision(self, position):
+        # CORRECTION
+        position = (position[0], position[1])
+        return self.rect.collidepoint(position)

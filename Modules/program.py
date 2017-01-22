@@ -116,3 +116,6 @@ class Program(pygame.Surface):
 
     def get_deleted(self):
         return self.deleted
+
+    def get_program(self):
+        return self.program
