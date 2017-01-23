@@ -6,7 +6,7 @@ You have robot, and some avaliable commands for him. Your target - program him, 
 Just for now I have half ready controls and program module.   
 And Polo :)   
 Looks like this:  
-![alt tag](https://github.com/zhufyakvv/Polo/blob/master/Demos/demo200117.png?raw=true)
+![alt tag](https://github.com/zhufyakvv/Polo/blob/master/Demos/demo220117.gif)
 # Scheme or how it works
 ![alt tag](http://i.imgur.com/pC527q1.png)
 # Resources
