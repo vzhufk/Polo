@@ -6,6 +6,7 @@ import os
 import pickle
 
 import load
+from robot import Robot
 
 tile = (50, 50)
 image_expansion = ".png"
@@ -28,6 +29,8 @@ class Level:
         self.name = name
         self.tiles = []
         self.moves = {'right': 0, 'left': 0, 'forward': 0, 'back': 0, 'lo': 0, 'op': 0}
+        self.placement = (1, 1)
+        self.direction = 2
 
     def load(self):
         f = open(location + self.name + expansion, 'rb')
@@ -47,3 +50,9 @@ class Level:
 
     def change_command(self, name, amount):
         self.moves[name] = int(amount)
+
+    def robot_place(self, t):
+        self.placement = (t[0], t[1])
+
+    def robot_direct(self, d):
+        self.direction = d

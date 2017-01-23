@@ -24,6 +24,7 @@ class Scene(pygame.Surface):
         self.position = pos
         self.robot = Robot()
         self.program = []
+        self.success = False
         self.run = False
         self.current = 0
         self.timing = 0
@@ -31,9 +32,9 @@ class Scene(pygame.Surface):
         self.update()
 
     def update(self):
+        self.fill((0, 0, 0))
         self.tiles.draw(self)
 
-        self.robot.update()
         tmp = pygame.sprite.Group()
         tmp.add(self.robot)
         tmp.draw(self)
@@ -44,6 +45,10 @@ class Scene(pygame.Surface):
     def level(self, lvl):
         for i in lvl.tiles:
             self.tiles.add(Tile(i.location, i.place))
+
+        self.robot.direct(lvl.direction)
+        self.robot.place(lvl.placement)
+        self.robot.update()
         self.update()
 
     def set_program(self, program):
@@ -76,13 +81,14 @@ class Scene(pygame.Surface):
             self.robot.turn_right()
             self.current += 1
             self.timing %= time
+        self.robot.update()
 
         if self.timing >= time:
             self.current += 1
             self.timing %= time
 
-        # TODO FALL OFF CHECK
-
-        if len(self.program) == self.current:
+        stand_on = self.robot.collide_any(self.tiles)
+        if len(self.program) == self.current or not stand_on[0]:
             self.run = False
+            self.success = stand_on[0] and stand_on[1].name == "finish"
             self.current = 0

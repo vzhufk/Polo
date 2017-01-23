@@ -18,3 +18,6 @@ class Tile(pygame.sprite.Sprite):
         self.original = self.image
         self.rect = Rect(placement[0], placement[1], self.rect[0] + self.rect[2],
                          self.rect[1] + self.rect[3])
+
+    def get_name(self):
+        return self.name

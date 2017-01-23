@@ -30,7 +30,6 @@ class Engine:
         self.scene = Scene()
 
     def load(self, name):
-        # TODO START & FINISH TILES
         self.level = Level(name)
         self.level.load()
 
@@ -85,4 +84,3 @@ class Engine:
             pygame.display.update()
 
             # TODO FPS LOCK
-            # TODO GIT IT

@@ -2,13 +2,16 @@
 # zhufyakvv@gmail.com
 # github.com/zhufyakvv
 # 19.01.2017
+import pygame
 
 import Modules.level
 import engine
 import level
 
+
 say = input(">Welcome to level creator!\n Create new (1) or Edit existing (2)?\n>")
 name = input(">Name?\n>")
+
 current = level.Level(name)
 if int(say) == 2:
     current.load()
@@ -17,6 +20,7 @@ run = True
 while run:
     say = input(">(1) Add tile\n"
                 ">(2) Change command\n"
+                ">(3) Polo placement\n"
                 ">(0) Exit\n>")
 
     if int(say) == 1:
@@ -32,6 +36,12 @@ while run:
         amount = input(">Set amount\n")
         print(">Prev amount was " + str(current.moves[name]) + "\n>")
         current.change_command(name, amount)
+    elif int(say) == 3:
+        x = int(input(">Set x location\n>"))
+        y = int(input(">Set y location\n>"))
+        direction = int(input(">Set direction\n>"))
+        current.robot_direct(direction)
+        current.robot_place((x, y))
     elif int(say) == 0:
         run = False
 

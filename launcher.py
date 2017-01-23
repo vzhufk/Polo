@@ -42,4 +42,5 @@ edit.place(x=75, y=50)
 q = Button(frame, text="Quit", command=quit)
 q.place(x=125, y=50)
 
+# TODO FINISH LAUNCHER
 frame.mainloop()

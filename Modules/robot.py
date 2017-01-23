@@ -57,7 +57,23 @@ class Robot(pygame.sprite.Sprite):
     def update(self):
         self.image = pygame.transform.rotate(self.original, self.direction * -90)
 
+    def place(self, cell):
+        self.rect.x = cell[0] * width
+        self.rect.y = cell[1] * height
+        self.fx = self.rect.x
+        self.fy = self.rect.y
+
+    def direct(self, direction):
+        self.direction = direction
+        self.update()
+
     def collision(self, position):
         # CORRECTION
         position = (position[0], position[1])
         return self.rect.collidepoint(position)
+
+    def collide_any(self, group):
+        for i in group:
+            if self.rect.colliderect(i.rect):
+                return True, i
+        return False, None
