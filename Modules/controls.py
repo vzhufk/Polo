@@ -14,6 +14,7 @@ class Controls(pygame.Surface):
     def __init__(self, s=size, pos=position):
         pygame.Surface.__init__(self, s)
         self.position = pos
+        self.rect = pygame.Rect(pos[0], pos[1], s[0], s[1])
         self.command = ""
         self.group = pygame.sprite.Group()
         self.init()
@@ -49,13 +50,14 @@ class Controls(pygame.Surface):
 
     def event(self, mouse):
         self.command = ""
-        if mouse.get_pressed()[0]:
-            for i in self.group.sprites():
-                if i.collision(numpy.subtract(mouse.get_pos(), self.position)):
-                    if i.get_amount() > 0:
-                        self.command = i.name
-                    i.change_amount(-1)
-        self.update()
+        if self.rect.collidepoint(mouse.get_pos()):
+            if mouse.get_pressed()[0]:
+                for i in self.group.sprites():
+                    if i.collision(numpy.subtract(mouse.get_pos(), self.position)):
+                        if i.get_amount() > 0:
+                            self.command = i.name
+                        i.change_amount(-1)
+            self.update()
 
     def get_command(self):
         return self.command

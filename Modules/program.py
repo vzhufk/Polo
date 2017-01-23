@@ -26,6 +26,7 @@ class Program(pygame.Surface):
         self.listing_counter = self.font.render("1/0", 2, text_color)
         self.program = []
         self.position = pos
+        self.rect = pygame.Rect(pos[0], pos[1], s[0], s[1])
         self.page = 0
         self.max_page = 0
         self.deleted = ""
@@ -89,23 +90,24 @@ class Program(pygame.Surface):
 
     def event(self, mouse):
         self.deleted = ""
-        if mouse.get_pressed()[0]:
-            # Press on command
-            for i in self.group.sprites():
-                if i.collision(numpy.subtract(mouse.get_pos(), self.position)):
-                    index = int((mouse.get_pos()[0] - command.width) / command.width)
-                    index += self.page * commands
-                    if str(self.program[index]) == i.name:
-                        self.deleted = str(self.program[index])
-                        self.delete(index)
-                    break
-            # Press on listing
-            if self.page_next.collision(numpy.subtract(mouse.get_pos(), self.position)):
-                self.page += 1
-            if self.page_prev.collision(numpy.subtract(mouse.get_pos(), self.position)):
-                self.page -= 1
+        if self.rect.collidepoint(mouse.get_pos()):
+            if mouse.get_pressed()[0]:
+                # Press on command
+                for i in self.group.sprites():
+                    if i.collision(numpy.subtract(mouse.get_pos(), self.position)):
+                        index = int((mouse.get_pos()[0] - command.width) / command.width)
+                        index += self.page * commands
+                        if str(self.program[index]) == i.name:
+                            self.deleted = str(self.program[index])
+                            self.delete(index)
+                        break
+                # Press on listing
+                if self.page_next.collision(numpy.subtract(mouse.get_pos(), self.position)):
+                    self.page += 1
+                if self.page_prev.collision(numpy.subtract(mouse.get_pos(), self.position)):
+                    self.page -= 1
 
-        self.update()
+            self.update()
 
     def add(self, name):
         self.program.append(name)
@@ -119,3 +121,7 @@ class Program(pygame.Surface):
 
     def get_program(self):
         return self.program
+
+    def flush(self):
+        self.program.clear()
+        self.update()

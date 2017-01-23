@@ -32,13 +32,17 @@ class Engine:
     def load(self, name):
         self.level = Level(name)
         self.level.load()
-
         # SETUP
         self.controls.level(self.level)
         self.scene.level(self.level)
 
-    def blit(self):
+    def reload(self):
+        self.controls.level(self.level)
+        self.program.flush()
+        self.scene.level(self.level)
 
+
+    def blit(self):
         self.display.blit(self.controls, self.controls.position)
         self.display.blit(self.program, self.program.position)
         self.display.blit(self.scene, self.scene.position)
@@ -70,16 +74,17 @@ class Engine:
 
     def run(self):
         self.blit()
-        # TODO RESTART AFTER LOSE
         while self.running:
             if self.scene.get_run():
-                self.scene.move(self.clock.tick())
+                self.scene.run(self.clock.tick())
                 self.clock.tick()
                 self.scene.update()
                 self.blit()
             else:
                 self.event()
 
+            if self.scene.stop() and not self.scene.success:
+                self.reload()
             pygame.display.flip()
             pygame.display.update()
 

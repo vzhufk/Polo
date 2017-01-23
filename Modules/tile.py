@@ -21,3 +21,6 @@ class Tile(pygame.sprite.Sprite):
 
     def get_name(self):
         return self.name
+
+    def get_position(self):
+        return self.rect.x, self.rect.y
