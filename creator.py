@@ -2,9 +2,7 @@
 # zhufyakvv@gmail.com
 # github.com/zhufyakvv
 # 19.01.2017
-import pygame
 
-import Modules.level
 import engine
 import level
 

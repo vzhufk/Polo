@@ -120,7 +120,7 @@ class Program(pygame.Surface):
         return self.deleted
 
     def get_program(self):
-        return self.program
+        return self.program.copy()
 
     def flush(self):
         self.program.clear()

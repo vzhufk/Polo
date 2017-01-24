@@ -1,5 +1,4 @@
 import os
-import pickle
 import sys
 
 import pygame
@@ -37,8 +36,8 @@ class Engine:
         self.scene.level(self.level)
 
     def reload(self):
-        self.controls.level(self.level)
-        self.program.flush()
+        # self.controls.level(self.level)
+        # self.program.flush()
         self.scene.level(self.level)
 
 
