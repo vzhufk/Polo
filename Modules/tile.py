@@ -8,13 +8,16 @@ from pygame.rect import Rect
 import font
 import load
 
+location = "Source/Tiles/"
+expansion = ".png"
 
 class Tile(pygame.sprite.Sprite):
     def __init__(self, name, placement=(0, 0)):
         pygame.sprite.Sprite.__init__(self)
         self.name = name
+        self.location = location + name + expansion
         # COLOR KEY ROLLS
-        self.image, self.rect = load.image(name, (0, 0, 0, 255))
+        self.image, self.rect = load.image(self.location, (0, 0, 0, 255))
         self.original = self.image
         self.rect = Rect(placement[0], placement[1], self.rect[0] + self.rect[2],
                          self.rect[1] + self.rect[3])

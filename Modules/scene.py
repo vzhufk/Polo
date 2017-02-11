@@ -75,7 +75,7 @@ class Scene(pygame.Surface):
 
     def level(self, lvl):
         for i in lvl.tiles:
-            self.tiles.add(Tile(i.location, i.place))
+            self.tiles.add(Tile(i.type, i.place))
 
         self.robot.direct(lvl.direction)
         self.robot.place(lvl.placement)

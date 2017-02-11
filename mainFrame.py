@@ -1,5 +1,5 @@
 import engine
 
 e = engine.Engine()
-e.load("demo")
+e.load("first")
 e.run()

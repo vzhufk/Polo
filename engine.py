@@ -7,6 +7,7 @@ import varibles
 from Modules.controls import Controls
 from Modules.program import Program
 from level import Level
+from menu import Menu
 from scene import Scene
 
 FPS = varibles.FPS
@@ -19,6 +20,7 @@ class Engine:
     def __init__(self):
         pygame.init()
         self.running = True
+        self.pause = True
         os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (0, 30)
         pygame.display.set_caption(window_title)
         self.display = pygame.display.set_mode(screen_resolution)
@@ -27,6 +29,7 @@ class Engine:
         self.controls = Controls()
         self.program = Program()
         self.scene = Scene()
+        self.menu = Menu()
 
     def load(self, name):
         self.level = Level(name)
@@ -36,15 +39,15 @@ class Engine:
         self.scene.level(self.level)
 
     def reload(self):
-        # self.controls.level(self.level)
-        # self.program.flush()
         self.scene.level(self.level)
 
-
     def blit(self):
+        # if not pause maybe
         self.display.blit(self.controls, self.controls.position)
         self.display.blit(self.program, self.program.position)
         self.display.blit(self.scene, self.scene.position)
+        if self.pause:
+            self.display.blit(self.menu, self.menu.position)
 
     def event(self):
         for event in pygame.event.get():
@@ -55,21 +58,21 @@ class Engine:
                 if event.key == pygame.K_ESCAPE:
                     pygame.quit()
                     sys.exit()
-            if pygame.mouse.get_pressed()[0]:
+
+            if self.pause:
+                self.menu.event(pygame.mouse)
+            else:
                 self.controls.event(pygame.mouse)
                 self.program.event(pygame.mouse)
                 self.scene.event(pygame.mouse)
-
                 if self.scene.get_run():
                     self.scene.set_program(self.program.get_program())
                     self.clock.tick()
-
                 if self.controls.get_command() != "":
                     self.program.add(self.controls.get_command())
                 if self.program.get_deleted() != "":
                     self.controls.add(self.program.get_deleted())
-
-                self.blit()
+            self.blit()
 
     def run(self):
         self.blit()
@@ -84,7 +87,9 @@ class Engine:
 
             if self.scene.stop() and not self.scene.success:
                 self.reload()
+            elif self.scene.success:
+                print("Gratz")
+                self.running = False
             pygame.display.flip()
             pygame.display.update()
-
             # TODO FPS LOCK

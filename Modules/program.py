@@ -14,6 +14,7 @@ sec_color = (106, 106, 106)
 commands = 10
 
 
+# TODO Change page if current is full
 class Program(pygame.Surface):
     def __init__(self, s=size, pos=position):
         pygame.Surface.__init__(self, s)
