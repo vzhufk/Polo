@@ -15,6 +15,13 @@ window_title = varibles.window_title
 screen_resolution = varibles.screen_resolution
 screen_mode = varibles.screen_mode
 
+'''
+    TODO TOTHINK Can try some double "thread" mode. We have two robots. And commands for them the same, but positions
+    are different.
+    TOTHINK Coop multilayer Portal2 like. Robots have to meet in custom place.
+    TOTHINK TODO SOMETHING WITH LIFE
+'''
+
 
 class Engine:
     def __init__(self):
@@ -48,6 +55,8 @@ class Engine:
         self.display.blit(self.scene, self.scene.position)
         if self.pause:
             self.display.blit(self.menu, self.menu.position)
+            # TODO Maybe Blur effect in pause
+            # TODO Pause invoke action
 
     def event(self):
         for event in pygame.event.get():
@@ -76,6 +85,7 @@ class Engine:
 
     def run(self):
         self.blit()
+        self.pause = True
         while self.running:
             if self.scene.get_run():
                 self.scene.run(self.clock.tick())
@@ -86,6 +96,7 @@ class Engine:
                 self.event()
 
             if self.scene.stop() and not self.scene.success:
+                print("And you failed :)")
                 self.reload()
             elif self.scene.success:
                 print("Gratz")
