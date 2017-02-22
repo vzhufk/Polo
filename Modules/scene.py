@@ -1,4 +1,3 @@
-
 import pygame
 from comtypes.safearray import numpy
 
@@ -50,6 +49,8 @@ def decode(program):
         i += 1
     return result
 
+
+# TODO Rebase
 
 class Scene(pygame.Surface):
     def __init__(self, s=size, pos=position):

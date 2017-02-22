@@ -50,8 +50,8 @@ class Engine:
 
     def blit(self):
         # if not pause maybe
-        self.display.blit(self.controls, self.controls.position)
-        self.display.blit(self.program, self.program.position)
+        self.display.blit(self.controls, self.controls.rect)
+        self.display.blit(self.program, self.program.rect)
         self.display.blit(self.scene, self.scene.position)
         if self.pause:
             self.display.blit(self.menu, self.menu.position)
@@ -77,15 +77,15 @@ class Engine:
                 if self.scene.get_run():
                     self.scene.set_program(self.program.get_program())
                     self.clock.tick()
-                if self.controls.get_command() != "":
-                    self.program.add(self.controls.get_command())
-                if self.program.get_deleted() != "":
-                    self.controls.add(self.program.get_deleted())
+                if self.controls.get_echo() is not None:
+                    self.program.add(self.controls.get_echo())
+                if self.program.get_echo() is not None:
+                    self.controls.add(self.program.get_echo())
             self.blit()
 
     def run(self):
         self.blit()
-        self.pause = True
+        self.pause = False
         while self.running:
             if self.scene.get_run():
                 self.scene.run(self.clock.tick())

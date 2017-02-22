@@ -7,23 +7,19 @@ from pygame.rect import Rect
 
 import font
 import load
+from sprite import Sprite
 
 location = "Source/Tiles/"
 expansion = ".png"
 
-class Tile(pygame.sprite.Sprite):
-    def __init__(self, name, placement=(0, 0)):
-        pygame.sprite.Sprite.__init__(self)
-        self.name = name
-        self.location = location + name + expansion
-        # COLOR KEY ROLLS
-        self.image, self.rect = load.image(self.location, (0, 0, 0, 255))
-        self.original = self.image
-        self.rect = Rect(placement[0], placement[1], self.rect[0] + self.rect[2],
-                         self.rect[1] + self.rect[3])
 
-    def get_name(self):
-        return self.name
-
-    def get_position(self):
-        return self.rect.x, self.rect.y
+class Tile(Sprite):
+    def __init__(self, name, placement=(0, 0), image_path=None):
+        """
+        :param name: Tile name of type
+        :param placement: Tile position
+        :param image_path: Path to tile image
+        """
+        Sprite.__init__(self, name, placement)
+        image_path = image_path if image_path is not None else location + name + expansion
+        self.load_image(image_path)

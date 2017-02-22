@@ -1,5 +1,6 @@
 import numpy
-import pygame
+
+import surface
 
 import varibles
 from Modules import command
@@ -10,32 +11,21 @@ size = (0.25 * varibles.screen_resolution[0], 0.75 * varibles.screen_resolution[
 color = (183, 183, 183)
 sec_color = (106, 106, 106)
 
-class Controls(pygame.Surface):
-    def __init__(self, s=size, pos=position):
-        pygame.Surface.__init__(self, s)
-        self.position = pos
-        self.rect = pygame.Rect(pos[0], pos[1], s[0], s[1])
-        self.command = ""
-        self.group = pygame.sprite.Group()
-        self.init()
-        self.update()
 
-    def init(self):
+class Controls(surface.Surface):
+    def __init__(self, pos=position, s=size):
+        surface.Surface.__init__(self, pos, s)
+        self.init_commands()
 
-        front = Command("forward", command.location + "forward" + command.expansion,
-                        (command.width / 2, command.height / 2))
-        back = Command("back", command.location + "back" + command.expansion, (command.width / 2, command.height / 2 +
-                                                                               command.height))
+    def init_commands(self):
+        front = Command("forward", (command.width / 2, command.height / 2))
+        back = Command("back", (command.width / 2, command.height / 2 + command.height))
 
-        right = Command("right", command.location + "right" + command.expansion, (command.width / 2 + command.width,
-                                                                                  command.height / 2))
-        left = Command("left", command.location + "left" + command.expansion, (command.width / 2 + command.width,
-                                                                               command.height / 2 + command.height))
+        right = Command("right", (command.width / 2 + command.width, command.height / 2))
+        left = Command("left", (command.width / 2 + command.width, command.height / 2 + command.height))
 
-        lo = Command("lo", command.location + "lo" + command.expansion, (command.width / 2 + 2 * command.width,
-                                                                         command.height / 2))
-        op = Command("op", command.location + "op" + command.expansion, (command.width / 2 + 2 * command.width,
-                                                                         command.height / 2 + command.height))
+        lo = Command("lo", (command.width / 2 + 2 * command.width, command.height / 2))
+        op = Command("op", (command.width / 2 + 2 * command.width, command.height / 2 + command.height))
 
         self.group.add(left)
         self.group.add(right)
@@ -44,28 +34,19 @@ class Controls(pygame.Surface):
         self.group.add(lo)
         self.group.add(op)
 
-    def update(self):
-        self.fill(color)
-        self.group.draw(self)
+    def make(self):
+        result = None
+        for i in self.echo:
+            if i.get_amount() > 0:
+                result = i
+                i.change_amount(-1)
+        self.echo = result
 
-    def event(self, mouse):
-        self.command = ""
-        if self.rect.collidepoint(mouse.get_pos()):
-            if mouse.get_pressed()[0]:
-                for i in self.group.sprites():
-                    if i.collision(numpy.subtract(mouse.get_pos(), self.position)):
-                        if i.get_amount() > 0:
-                            self.command = i.name
-                        i.change_amount(-1)
-            self.update()
-
-    def get_command(self):
-        return self.command
-
-    def add(self, name):
+    def add(self, item):
         for i in self.group:
-            if name == i.name:
-                i.change_amount(1)
+            for j in item:
+                if j.name == i.name:
+                    i.change_amount(1)
         self.update()
 
     def set(self, name, amount):

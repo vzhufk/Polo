@@ -7,6 +7,7 @@ from comtypes.safearray import numpy
 
 import font
 import varibles
+from sprite import Sprite
 
 position = (0.4 * varibles.screen_resolution[0], 0.3 * varibles.screen_resolution[1])
 size = (0.2 * varibles.screen_resolution[0], 0.4 * varibles.screen_resolution[1])
@@ -16,30 +17,17 @@ option_size = (320, 60)
 option_text_pos = (0, 20)
 
 
-class Option(pygame.sprite.Sprite):
+class Option(Sprite):
     def __init__(self, caption="", place=(0, 0), s=option_size):
-        pygame.sprite.Sprite.__init__(self)
-        self.rect = pygame.Rect(place[0], place[1], s[0], s[1])
-        self.image = None
-        self.caption = caption
-        self.position = place
-        self.font = font.heavy
+        Sprite.__init__(self, caption, place, option_size)
+        self.set_font(font.heavy)
         self.update()
 
     def update(self):
         surf = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
-        text = self.font.render(self.caption, 2, (0, 0, 0))
+        text = self.font.render(self.name, 2, (0, 0, 0))
         surf.blit(text, option_text_pos)
         self.image = surf
-
-    def collision(self, point):
-        # CORRECTION
-        point = (point[0], point[1])
-        return self.rect.collidepoint(point)
-
-    def change_caption(self, new_text):
-        self.caption = new_text
-        self.update()
 
     def focus(self):
         print("You are on " + self.caption)
