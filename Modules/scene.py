@@ -1,12 +1,12 @@
 import pygame
-from comtypes.safearray import numpy
 
+import surface
 import varibles
 from robot import Robot
 from tile import Tile
 
 position = (0, 0)
-size = (0.75 * varibles.screen_resolution[0], 0.75 * varibles.screen_resolution[1])
+size = (varibles.screen_resolution[0], 0.75 * varibles.screen_resolution[1])
 color = [14, 14, 14]
 
 time = 500
@@ -16,6 +16,12 @@ time = 500
 # 12x9 by 50
 
 def decode(program):
+    """
+    Decodes program to simple commands. Decode LO and OP to pure commands:
+    LO LEFT BACK OP => LEFT BACK LEFT BACK
+    :param program: list of string
+    :return:
+    """
     result = []
     i = 0
     while i < len(program):
@@ -50,14 +56,9 @@ def decode(program):
     return result
 
 
-# TODO Rebase
-
-class Scene(pygame.Surface):
-    def __init__(self, s=size, pos=position):
-        pygame.Surface.__init__(self, s)
-        self.tiles = pygame.sprite.Group()
-        self.rect = pygame.Rect(pos[0], pos[1], s[0], s[1])
-        self.position = pos
+class Scene(surface.Surface):
+    def __init__(self, pos=position, s=size, c=color):
+        surface.Surface.__init__(self, pos, s, c)
         self.robot = Robot()
         self.program = []
         self.success = False
@@ -67,39 +68,66 @@ class Scene(pygame.Surface):
         self.update()
 
     def update(self):
-        self.fill((0, 0, 0))
-        self.tiles.draw(self)
+        surface.Surface.update(self)
+        self.robot.update()
 
         tmp = pygame.sprite.Group()
         tmp.add(self.robot)
         tmp.draw(self)
 
     def level(self, lvl):
+        """
+        Loads tile, robot from level
+        :param lvl: level class
+        :return: ready for game scene
+        """
         for i in lvl.tiles:
-            self.tiles.add(Tile(i.type, i.place))
+            self.group.add(Tile(i.type, i.place))
 
         self.robot.direct(lvl.direction)
         self.robot.place(lvl.placement)
-        self.robot.update()
         self.update()
 
     def set_program(self, program):
+        """
+        :param program: list of strings - "Dirty" program
+        :return:
+        """
         self.program = decode(program)
         self.current = 0
         self.timing = 0
 
     def get_run(self):
+        """
+        Shows if scene is running
+        :return: bool of running
+        """
         return self.running
 
     def get_success(self):
+        """
+        If robot on exit
+        :return: bool get succeed
+        """
         return self.success
 
     def event(self, mouse):
-        if self.rect.collidepoint(mouse.get_pos()):
-            if mouse.get_pressed()[0] and self.robot.collision(numpy.subtract(mouse.get_pos(), self.position)):
+        """
+        Events on scene
+        :param mouse: pygame.mouse
+        :return:
+        """
+        if self.is_in(mouse.get_pos()):
+            if mouse.get_pressed()[0] and self.robot.collision(self.on_surface(mouse.get_pos())):
                 self.running = True
 
     def move(self, command, tick):
+        """
+        Moving robot according to program
+        :param command: current "line" of program
+        :param tick: time passed from last call of this function
+        :return: moving effect of robot
+        """
         if command == "forward":
             self.robot.move(tick / time)
         elif command == "back":
@@ -116,7 +144,11 @@ class Scene(pygame.Surface):
             self.robot.update()
 
     def stop(self):
-        stand = self.robot.collide_any(self.tiles)
+        """
+        Stops program and check success
+        :return:
+        """
+        stand = self.robot.collide_group(self.group)
         if len(self.program) == self.current or not stand[0]:
             self.running = False
             self.success = stand[0] and stand[1].name == "finish"
@@ -126,10 +158,14 @@ class Scene(pygame.Surface):
             return False
 
     def run(self, tick):
+        """
+        Running of scene
+        :param tick: time from lst call
+        :return: calls robot movement
+        """
         self.current = 0 if self.current < 0 else self.current
         if not self.stop():
             self.timing += tick
-
             if self.timing >= time:
                 self.timing %= time
                 self.move(self.program[self.current], tick - self.timing)

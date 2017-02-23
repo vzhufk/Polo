@@ -1,5 +1,3 @@
-import numpy
-
 import surface
 
 import varibles
@@ -18,6 +16,10 @@ class Controls(surface.Surface):
         self.init_commands()
 
     def init_commands(self):
+        """
+        Initialize all available commands
+        :return:
+        """
         front = Command("forward", (command.width / 2, command.height / 2))
         back = Command("back", (command.width / 2, command.height / 2 + command.height))
 
@@ -35,6 +37,10 @@ class Controls(surface.Surface):
         self.group.add(op)
 
     def make(self):
+        """
+        Decrement clicked command
+        :return: echo it to other modules
+        """
         result = None
         for i in self.echo:
             if i.get_amount() > 0:
@@ -43,6 +49,11 @@ class Controls(surface.Surface):
         self.echo = result
 
     def add(self, item):
+        """
+        Adds amount to some command
+        :param item: sprite with name of addable command
+        :return:
+        """
         for i in self.group:
             for j in item:
                 if j.name == i.name:
@@ -50,11 +61,22 @@ class Controls(surface.Surface):
         self.update()
 
     def set(self, name, amount):
+        """
+        Set amount for command
+        :param name: name of command
+        :param amount: amount
+        :return:
+        """
         for i in self.group:
             if name == i.name:
-                i.set_amount(amount)
+                i.set_amount(int(amount))
         self.update()
 
     def level(self, lvl):
+        """
+        Loads commands from level class
+        :param lvl: level class
+        :return:
+        """
         for i in lvl.moves.keys():
             self.set(i, lvl.moves[i])

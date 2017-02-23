@@ -7,7 +7,6 @@ import copy
 from pygame.rect import Rect
 
 from Libraries.load import *
-import Source.font as font
 
 height = 50
 width = 50
@@ -87,11 +86,27 @@ class Sprite(pygame.sprite.Sprite):
         :param point: tuple
         :return: bool of collision
         """
-        point = (point[0], point[1])
-        return self.rect.collidepoint(point)
+        p = (point[0], point[1])
+        return self.rect.collidepoint(p)
+
+    def collide_group(self, group):
+        """
+        Check collision to some group
+        :param group: pygame.sprite.Group
+        :return: bool, collided sprites
+        """
+        result = []
+        for i in group:
+            if self.rect.colliderect(i.rect):
+                result.append(i)
+        if len(result) == 0:
+            return False, None
+        else:
+            return True, result
 
     def copy(self):
         """
         :return: Copy of this sprite
         """
         return copy.copy(self)
+

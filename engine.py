@@ -52,7 +52,7 @@ class Engine:
         # if not pause maybe
         self.display.blit(self.controls, self.controls.rect)
         self.display.blit(self.program, self.program.rect)
-        self.display.blit(self.scene, self.scene.position)
+        self.display.blit(self.scene, self.scene.rect)
         if self.pause:
             self.display.blit(self.menu, self.menu.position)
             # TODO Maybe Blur effect in pause
