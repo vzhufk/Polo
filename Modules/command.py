@@ -1,9 +1,5 @@
-import copy
-
-from pygame.rect import Rect
-
-from Libraries.load import *
 import Source.font as font
+from Libraries.load import *
 from sprite import Sprite
 
 height = 50
@@ -14,7 +10,7 @@ expansion = ".png"
 
 
 class Command(Sprite):
-    def __init__(self, name, placement=(0, 0), image_path=None, s=size):
+    def __init__(self, name, placement=(0, 0), image_path=None, s=size, countable=True):
         """
         :param name: Command name
         :param placement: Placement related to surface
@@ -27,7 +23,7 @@ class Command(Sprite):
         self.set_font(font.medium)
         self.original = self.image
         self.fade = False
-        self.countable = True
+        self.countable = countable
         self.amount = 0
         self.update()
 

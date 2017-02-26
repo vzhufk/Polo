@@ -1,4 +1,3 @@
-import numpy
 import pygame
 
 import font
@@ -6,6 +5,7 @@ import surface
 import varibles
 from Modules import command
 from Modules.command import Command
+from decode import decode
 
 position = (0, 0.75 * varibles.screen_resolution[1])
 size = (0.75 * varibles.screen_resolution[0], 0.25 * varibles.screen_resolution[1])
@@ -141,11 +141,13 @@ class Program(surface.Surface):
         Gets program
         :return: list of sprites
         """
-        # TODO Should I modify if to list of strings???
+        # TODO Should I modify it to list of strings???
         # TODO Just for now
         tmp = []
         for i in self.program:
             tmp.append(str(i))
+
+        tmp = decode(tmp)
         return tmp
 
     def flush(self):

@@ -3,7 +3,6 @@
 # github.com/zhufyakvv
 # 11.02.2017
 import pygame
-from comtypes.safearray import numpy
 
 import font
 import sprite
@@ -55,11 +54,5 @@ class Menu(surface.Surface):
         self.group.draw(self)
         # TODO event update
 
-    def event(self, mouse):
-        if self.rect.collidepoint(mouse.get_pos()):
-            for i in self.group.sprites():
-                if i.collision(numpy.subtract(mouse.get_pos(), self.position)):
-                    i.focus()
-
-        self.update()
-        # TODO Replace by make overload
+    def make(self):
+        print(self.echo)

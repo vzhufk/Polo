@@ -11,8 +11,7 @@ height = 50
 width = 50
 size = (50, 50)
 name = "polo"
-image_name = "polo"
-location = "Source/Prop/"
+def_location = "Source/Prop/"
 expansion = ".png"
 
 
@@ -23,8 +22,9 @@ expansion = ".png"
 # 3 - left
 
 class Robot(sprite.Sprite):
-    def __init__(self, n=name, i_n=image_name, placement=(50, 50)):
+    def __init__(self, n=name, i_n=None, placement=(50, 50)):
         sprite.Sprite.__init__(self, n, placement)
+        i_n = i_n if i_n is not None else def_location + n + expansion
         self.load_image(i_n)
         self.original = self.image
         self.fx = float(self.rect.x)
@@ -68,6 +68,7 @@ class Robot(sprite.Sprite):
         :return:
         """
         self.image = pygame.transform.rotate(self.original, self.direction * -90)
+        sprite.Sprite.update(self)
 
     def place(self, cell):
         """

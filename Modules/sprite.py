@@ -26,6 +26,8 @@ class Sprite(pygame.sprite.Sprite):
         self.name = name
         self.image = None
         self.font = None
+        self.group = pygame.sprite.Group()
+        self.group.add(self)
         self.rect = Rect(placement[0], placement[1], s[0], s[1])
 
     def __str__(self):
@@ -42,6 +44,7 @@ class Sprite(pygame.sprite.Sprite):
         """
         self.image, rect = image(image_path, -1)
         self.rect.width, self.rect.height = rect.width, rect.height
+
 
     def set_font(self, some_font):
         """
@@ -86,8 +89,7 @@ class Sprite(pygame.sprite.Sprite):
         :param point: tuple
         :return: bool of collision
         """
-        p = (point[0], point[1])
-        return self.rect.collidepoint(p)
+        return self.rect.collidepoint(point)
 
     def collide_group(self, group):
         """
@@ -110,3 +112,11 @@ class Sprite(pygame.sprite.Sprite):
         """
         return copy.copy(self)
 
+    def blit(self, surf):
+        """
+        Blits sprite into surface
+        Extension
+        :param surf: pygame.surface
+        :return:
+        """
+        self.group.draw(surf)
