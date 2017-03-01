@@ -21,6 +21,8 @@ expansion = ".png"
 # 2 - bot
 # 3 - left
 
+
+# TODO Make death animation (rotate and scale down) :)
 class Robot(sprite.Sprite):
     def __init__(self, n=name, i_n=None, placement=(50, 50)):
         sprite.Sprite.__init__(self, n, placement)
@@ -90,3 +92,20 @@ class Robot(sprite.Sprite):
         self.direction = direction
         self.update()
 
+    def tile_collide(self, group):
+        """
+        Checks robot collision to tile
+        Actually its just collision to the center of sprite
+        :param group:
+        :return:
+        """
+        result = []
+        point = (self.rect[0] + self.rect[2] / 2, self.rect[1] + self.rect[3] / 2)
+        for i in group:
+            if i.collision(point):
+                result.append(i)
+
+        if len(result) == 0:
+            return False, None
+        else:
+            return True, result

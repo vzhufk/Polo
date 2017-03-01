@@ -42,10 +42,11 @@ class Controls(surface.Surface):
         :return: echo it to other modules
         """
         result = None
-        for i in self.echo:
-            if i.get_amount() > 0:
-                result = i
-                i.change_amount(-1)
+        if self.echo is not None:
+            for i in self.echo:
+                if i.get_amount() > 0:
+                    result = i
+                    i.change_amount(-1)
         self.echo = result
 
     def add(self, item):

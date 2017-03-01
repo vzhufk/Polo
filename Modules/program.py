@@ -17,7 +17,15 @@ commands = 10
 
 class Program(surface.Surface):
     def __init__(self, pos=position, s=size, c=color):
-        surface.Surface.__init__(self, pos, s, c)
+        # Because this module is soo special. You cant believe it. But it is.
+        pygame.Surface.__init__(self, s)
+        self.rect = pygame.Rect(pos[0], pos[1], s[0], s[1])
+        self.group = pygame.sprite.Group()
+        self.color = c
+        self.font = None
+        self.echo = None
+        # End of special needs
+
         self.page_prev = Command("prev_page", (0, command.height))
         self.page_next = Command("next_page", (size[0] - command.width, command.height))
         self.set_font(font.heavy)
@@ -26,6 +34,7 @@ class Program(surface.Surface):
         self.page = 0
         self.max_page = 0
         self.init()
+        self.update()
 
     def init(self):
         """
@@ -100,20 +109,21 @@ class Program(surface.Surface):
         :return:
         """
         echo = []
-        for i in self.echo:
-            if i.name == "prev_page":
-                self.page -= 1
-                self.echo = None
-            elif i.name == "next_page":
-                self.page += 1
-                self.echo = None
-            else:
-                echo.append(i)
-                # because we have page turn command which adds extra 1
-                index = -1
-                index += (self.page * commands)
-                index += i.rect.x / i.rect.w
-                self.delete(int(index) - 1)
+        if self.echo is not None:
+            for i in self.echo:
+                if i.name == "prev_page":
+                    self.page -= 1
+                    self.echo = None
+                elif i.name == "next_page":
+                    self.page += 1
+                    self.echo = None
+                else:
+                    echo.append(i)
+                    # because we have page turn command which adds extra 1
+                    index = 0  # -1
+                    index += (self.page * commands)
+                    index += i.rect.x / i.rect.w
+                    self.delete(int(index) - 1)
         self.echo = echo
 
     def add(self, item):

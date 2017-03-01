@@ -45,7 +45,6 @@ class Sprite(pygame.sprite.Sprite):
         self.image, rect = image(image_path, -1)
         self.rect.width, self.rect.height = rect.width, rect.height
 
-
     def set_font(self, some_font):
         """
         Set some ready font for sprite

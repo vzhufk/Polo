@@ -49,7 +49,6 @@ class Engine:
         self.scene.level(self.level)
 
     def blit(self):
-        # TODO if not pause maybe
         self.display.blit(self.controls, self.controls.rect)
         self.display.blit(self.program, self.program.rect)
         self.display.blit(self.scene, self.scene.rect)
@@ -57,17 +56,14 @@ class Engine:
         if self.pause:
             self.display.blit(self.menu, self.menu.rect)
             # TODO Maybe Blur effect in pause
-            # TODO Pause invoke action
 
     def event(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
+                self.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    pygame.quit()
-                    sys.exit()
+                    self.exit()
 
             if self.pause:
                 self.menu.event(pygame.mouse)
@@ -75,21 +71,54 @@ class Engine:
                 self.controls.event(pygame.mouse)
                 self.program.event(pygame.mouse)
                 self.scene.event(pygame.mouse)
+
+                """If was pressed key while robot was moving"""
+                """Just reload"""
+                # TODO Or speed it up???
+                # I can just change time in scene to speed up
+                if self.scene.launch and pygame.mouse.get_pressed()[0]:
+                    self.reload()
+
             self.invoker()
 
     def invoker(self):
+        """
+        Invokes module calls
+        :return:
+        """
+        """Controls Echos"""
         if self.controls.get_echo() is not None:
             self.program.add(self.controls.get_echo())
+            self.controls.echo_out()
+
+        """Program Echos"""
         if self.program.get_echo() is not None:
             self.controls.add(self.program.get_echo())
+            self.program.echo_out()
 
-        """Check if pause or run was called from scene"""
-        if self.scene.echo is not None:
-            for i in self.scene.echo:
-                if i.name == "finish":
-                    self.pause = True
-                elif i.name == "polo":
-                    self.setup_scene()
+        """Scene Echos"""
+        if self.scene.get_echo() is not None:
+            self.scene_handler()
+            self.scene.echo_out()
+
+        """Menu Echos"""
+        if self.menu.get_echo() is not None:
+            self.menu_handler()
+            self.menu.echo_out()
+
+    def menu_handler(self):
+        for i in self.menu.get_echo():
+            if str(i) == "Continue":
+                self.pause = False
+            elif str(i) == "Exit":
+                self.exit()
+
+    def scene_handler(self):
+        for i in self.scene.echo:
+            if i.name == "finish":
+                self.pause = True
+            elif i.name == "polo":
+                self.setup_scene()
 
     def setup_scene(self):
         """
@@ -102,6 +131,7 @@ class Engine:
 
     def run(self):
         self.blit()
+        self.pause = True
         while True:
             self.blit()
             if self.scene.launch:
@@ -117,3 +147,8 @@ class Engine:
             pygame.display.flip()
             pygame.display.update()
             # TODO FPS LOCK
+
+    def exit(self):
+        self.pause = True
+        pygame.quit()
+        sys.exit()

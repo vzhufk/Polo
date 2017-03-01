@@ -7,8 +7,6 @@ import numpy
 import pygame
 
 import varibles
-from Modules import command
-from Modules.command import Command
 
 position = (0.75 * varibles.screen_resolution[0], 0.75 * varibles.screen_resolution[1])
 size = (0.25 * varibles.screen_resolution[0], 0.75 * varibles.screen_resolution[1])
@@ -17,13 +15,15 @@ sec_color = (106, 106, 106)
 
 
 class Surface(pygame.Surface):
-    def __init__(self, pos=position, s=size, c=color):
+    def __init__(self, pos=position, s=size, c=color, font=None):
         pygame.Surface.__init__(self, s)
         self.rect = pygame.Rect(pos[0], pos[1], s[0], s[1])
         self.group = pygame.sprite.Group()
         self.color = c
-        self.font = None
+        self.font = font
+        self.hover = None
         self.echo = None
+        self.update()
 
     def update(self):
         self.fill(self.color)
@@ -65,21 +65,15 @@ class Surface(pygame.Surface):
         :return: list of clicked sprites into self.echo
         """
         self.echo = None
-        if mouse.get_pressed()[0] and self.is_in(mouse.get_pos()):
-            self.set_echo(self.collide_all(mouse.get_pos()))
+        self.hover = None
+        if self.is_in(mouse.get_pos()):
+            self.hover = (self.collide_all(mouse.get_pos()))
+            if mouse.get_pressed()[0]:
+                self.echo = self.hover
             self.make()
-        self.update()
 
     def make(self):
-        print(self.echo)
-
-    def set_echo(self, value):
-        """
-        Set echos param
-        :param value: any
-        :return:
-        """
-        self.echo = value
+        pass
 
     def set_font(self, some_font):
         """
@@ -94,4 +88,12 @@ class Surface(pygame.Surface):
         Gets echo
         :return: echo any
         """
+        self.update()
         return self.echo
+
+    def echo_out(self):
+        """
+        Clears echo after get
+        :return:
+        """
+        self.echo = None

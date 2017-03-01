@@ -16,8 +16,8 @@ time = 500
 
 class Scene(surface.Surface):
     def __init__(self, pos=position, s=size, c=color):
-        surface.Surface.__init__(self, pos, s, c)
         self.robot = Robot()
+        surface.Surface.__init__(self, pos, s, c)
         self.program = []
         # Scene running
         self.launch = False
@@ -96,7 +96,7 @@ class Scene(surface.Surface):
         Checks robot state while running
         :return:
         """
-        stand = self.robot.collide_group(self.group)
+        stand = self.robot.tile_collide(self.group)
 
         if len(self.program) <= self.current or not stand[0]:
             """If end of program or out of tiles"""
