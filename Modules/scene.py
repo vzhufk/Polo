@@ -116,6 +116,7 @@ class Scene(surface.Surface):
         self.success = False
 
     def flush(self):
+        surface.Surface.flush(self)
         self.launch = False
         self.done = False
         self.success = False

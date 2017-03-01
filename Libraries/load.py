@@ -1,6 +1,9 @@
 import os
+from os.path import isfile, join
 
 import pygame
+
+import varibles
 
 
 def image(name, color_key=None):
@@ -44,3 +47,8 @@ def sound(name):
         print('Cannot load sound:', name)
         raise SystemExit(message)
     return sound
+
+
+def get_levels(path=varibles.level_path):
+    path = os.getcwd() + path
+    return [f for f in os.listdir(path) if isfile(join(path, f))]

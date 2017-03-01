@@ -3,6 +3,7 @@ import sys
 
 import pygame
 
+import load
 import varibles
 from Modules.controls import Controls
 from Modules.program import Program
@@ -14,6 +15,7 @@ FPS = varibles.FPS
 window_title = varibles.window_title
 screen_resolution = varibles.screen_resolution
 screen_mode = varibles.screen_mode
+
 
 '''
     TODO TOTHINK Can try some double "thread" mode. We have two robots. And commands for them the same, but positions
@@ -31,17 +33,26 @@ class Engine:
         os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (0, 30)
         pygame.display.set_caption(window_title)
         self.display = pygame.display.set_mode(screen_resolution)
+        self.current_level = 1
         self.clock = pygame.time.Clock()
-        self.level = Level("demo")
+        self.level = Level(load.get_levels()[self.current_level])
         self.controls = Controls()
         self.program = Program()
         self.scene = Scene()
         self.menu = Menu()
 
+    def get_level(self):
+        return self.current_level
+
+    def set_level(self, new_lvl):
+        self.current_level = new_lvl
+        self.load(load.get_levels()[new_lvl])
+
     def load(self, name):
         self.level = Level(name)
         self.level.load()
         # Pass level to other modules
+        self.program = Program()
         self.controls.level(self.level)
         self.scene.level(self.level)
 
@@ -108,10 +119,12 @@ class Engine:
 
     def menu_handler(self):
         for i in self.menu.get_echo():
-            if str(i) == "Continue":
+            if str(i) == "continue":
                 self.pause = False
-            elif str(i) == "Exit":
+            elif str(i) == "exit":
                 self.exit()
+            elif str(i) == "level":
+                self.load(i.caption)
 
     def scene_handler(self):
         for i in self.scene.echo:

@@ -97,3 +97,8 @@ class Surface(pygame.Surface):
         :return:
         """
         self.echo = None
+
+    def flush(self):
+        self.group = pygame.sprite.Group()
+        self.hover = None
+        self.echo = None
