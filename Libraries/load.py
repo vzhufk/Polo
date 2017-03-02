@@ -34,6 +34,19 @@ def load_lined_sprite(filename, w, h):
     return images
 
 
+def load_sliced_sprite(filename, w, h):
+    images = []
+    parent_image = pygame.image.load(filename).convert_alpha()
+
+    parent_image.set_colorkey((255, 0, 255))
+    parent_w, parent_h = parent_image.get_size()
+
+    for j in range(int(parent_h / h)):
+        for i in range(int(parent_w / w)):
+            images.append(parent_image.subsurface((i * w, j * h, w, h)))
+    return images
+
+
 def sound(name):
     class NoneSound:
         def play(self): pass

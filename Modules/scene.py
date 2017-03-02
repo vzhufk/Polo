@@ -23,6 +23,7 @@ class Scene(surface.Surface):
         self.launch = False
         self.done = False
         self.success = False
+        self.death = False
         self.current = -1
         self.timing = 0
         self.update()
@@ -69,14 +70,16 @@ class Scene(surface.Surface):
                         result.append(i)
                 self.echo = result
 
-    def move(self, command, tick):
+    def action(self, command, tick):
         """
         Moving robot according to program
         :param command: current "line" of program
         :param tick: time passed from last call of this function
         :return: moving effect of robot
         """
-        if command == "forward":
+        if self.robot.dead:
+            self.robot.death(tick / time)
+        elif command == "forward":
             self.robot.move(tick / time)
         elif command == "back":
             self.robot.move(-tick / time)
@@ -98,7 +101,7 @@ class Scene(surface.Surface):
         """
         stand = self.robot.tile_collide(self.group)
 
-        if len(self.program) <= self.current or not stand[0]:
+        if len(self.program) <= self.current:
             """If end of program or out of tiles"""
             self.launch = False
             self.done = True
@@ -107,6 +110,8 @@ class Scene(surface.Surface):
                 for i in stand[1]:
                     if i.name == "finish":
                         self.success = True
+        elif not stand[0] and not self.robot.dead:
+            self.robot.dead = True
 
     def start(self):
         self.timing = 0
@@ -117,28 +122,36 @@ class Scene(surface.Surface):
 
     def flush(self):
         surface.Surface.flush(self)
+        self.robot.flush()
+        self.death = False
         self.launch = False
         self.done = False
         self.success = False
         self.current = -1
         self.timing = 0
 
+    # TODO Fix explosion
     def step(self, tick):
         """
         Running of scene
         :param tick: time from lst call
         :return: calls robot movement
         """
-        self.timing += tick
-        if self.timing >= time:
-            '''If tick get into 2 different commands in program'''
-            self.timing %= time
-            self.move(self.program[self.current], tick - self.timing)
-            self.current += 1
-            if self.current < len(self.program):
-                self.move(self.program[self.current], self.timing)
+        if self.robot.dead:
+            self.action("die", tick * 5)
+            # Call end of program
+            self.current = len(self.program) - 1
         else:
-            self.move(self.program[self.current], tick)
+            self.timing += tick
+            if self.timing >= time:
+                '''If tick get into 2 different commands in program'''
+                self.timing %= time
+                self.action(self.program[self.current], tick - self.timing)
+                self.current += 1
+                if self.current < len(self.program):
+                    self.action(self.program[self.current], self.timing)
+            else:
+                self.action(self.program[self.current], tick)
 
         # Check if we can move more
         self.state()

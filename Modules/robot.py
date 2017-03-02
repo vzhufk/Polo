@@ -4,6 +4,7 @@
 # 14.01.2017
 
 import Source.font as font
+import load
 import sprite
 from Libraries.load import *
 
@@ -11,6 +12,7 @@ height = 50
 width = 50
 size = (50, 50)
 name = "polo"
+death_path = "explosion"
 def_location = "Source/Prop/"
 expansion = ".png"
 
@@ -28,11 +30,19 @@ class Robot(sprite.Sprite):
         sprite.Sprite.__init__(self, n, placement)
         i_n = i_n if i_n is not None else def_location + n + expansion
         self.load_image(i_n)
+        self.dead = False
+        self.death_sprites = load.load_sliced_sprite(def_location + death_path + expansion, width, height)
+        self.death_sprite_current = 0.0
         self.original = self.image
         self.fx = float(self.rect.x)
         self.fy = float(self.rect.y)
         self.set_font(font.medium)
         self.direction = 2
+
+    def flush(self):
+        self.dead = False
+        self.death_sprite_current = 0.0
+        self.update()
 
     def turn_left(self):
         """
@@ -69,7 +79,8 @@ class Robot(sprite.Sprite):
         Rotate image if needed
         :return:
         """
-        self.image = pygame.transform.rotate(self.original, self.direction * -90)
+        if not self.dead:
+            self.image = pygame.transform.rotate(self.original, self.direction * -90)
         sprite.Sprite.update(self)
 
     def place(self, cell):
@@ -109,3 +120,10 @@ class Robot(sprite.Sprite):
             return False, None
         else:
             return True, result
+
+    # TODO Fix explosions
+    def death(self, percent=1):
+        self.death_sprite_current += percent
+        self.dead = self.death_sprite_current < len(self.death_sprites)
+        if self.dead:
+            self.image = self.death_sprites[int(self.death_sprite_current)]
