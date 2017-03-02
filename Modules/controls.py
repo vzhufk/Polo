@@ -10,6 +10,8 @@ color = (183, 183, 183)
 sec_color = (106, 106, 106)
 
 
+# TODO Rotate forward and back buttons in robot direction (just pass direction in the beginning and then rotate)
+
 class Controls(surface.Surface):
     def __init__(self, pos=position, s=size):
         surface.Surface.__init__(self, pos, s)
