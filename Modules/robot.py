@@ -12,7 +12,7 @@ height = 50
 width = 50
 size = (50, 50)
 name = "polo"
-death_path = "explosion"
+death_path = "long_explosion"
 def_location = "Source/Prop/"
 expansion = ".png"
 
@@ -121,9 +121,19 @@ class Robot(sprite.Sprite):
         else:
             return True, result
 
-    # TODO Fix explosions
-    def death(self, percent=1):
+    def death(self, percent=1.0):
+        """
+        Performs death of robot
+        :param percent: 0<=percent<=1 1 equals one frame from death animation
+        :return:
+        """
         self.death_sprite_current += percent
-        self.dead = self.death_sprite_current < len(self.death_sprites)
-        if self.dead:
+        if self.dying():
             self.image = self.death_sprites[int(self.death_sprite_current)]
+
+    def dying(self):
+        """
+        Shows if robot is still dying, or already dead.
+        :return:
+        """
+        return len(self.death_sprites) > self.death_sprite_current >= 0

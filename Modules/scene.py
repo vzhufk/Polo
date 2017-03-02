@@ -7,6 +7,7 @@ position = (0, 0)
 size = (varibles.screen_resolution[0], 0.75 * varibles.screen_resolution[1])
 color = [14, 14, 14]
 
+speed_up = 25
 time = 500
 
 
@@ -18,13 +19,19 @@ class Scene(surface.Surface):
     def __init__(self, pos=position, s=size, c=color):
         self.robot = Robot()
         surface.Surface.__init__(self, pos, s, c)
+        # Scene program from engine
         self.program = []
         # Scene running
         self.launch = False
+        # Program running finished
         self.done = False
+        # Program succeeded
         self.success = False
+        # Death on scene (robot death)
         self.death = False
+        # Current command in program
         self.current = -1
+        # Current scene time
         self.timing = 0
         self.update()
 
@@ -77,7 +84,7 @@ class Scene(surface.Surface):
         :param tick: time passed from last call of this function
         :return: moving effect of robot
         """
-        if self.robot.dead:
+        if command == "die":
             self.robot.death(tick / time)
         elif command == "forward":
             self.robot.move(tick / time)
@@ -99,9 +106,10 @@ class Scene(surface.Surface):
         Checks robot state while running
         :return:
         """
+        # Sprites on which Polo is standing
         stand = self.robot.tile_collide(self.group)
-
-        if len(self.program) <= self.current:
+        # Means end of road, and reload
+        if len(self.program) <= self.current or (self.death and not self.robot.dying()):
             """If end of program or out of tiles"""
             self.launch = False
             self.done = True
@@ -110,37 +118,43 @@ class Scene(surface.Surface):
                 for i in stand[1]:
                     if i.name == "finish":
                         self.success = True
-        elif not stand[0] and not self.robot.dead:
-            self.robot.dead = True
+        # Means death (if robot out of tiles)
+        self.death = not stand[0]
 
     def start(self):
+        """
+        Setups start of scene
+        :return:
+        """
+        self.done = False
+        self.death = False
+        self.success = False
         self.timing = 0
         self.launch = len(self.program) > 0
         self.current = 0 if self.current < 0 else self.current
-        self.done = False
-        self.success = False
 
     def flush(self):
+        """
+        Scene flush
+        :return:
+        """
         surface.Surface.flush(self)
         self.robot.flush()
-        self.death = False
+        self.start()
         self.launch = False
-        self.done = False
-        self.success = False
         self.current = -1
-        self.timing = 0
 
-    # TODO Fix explosion
     def step(self, tick):
         """
         Running of scene
         :param tick: time from lst call
         :return: calls robot movement
         """
-        if self.robot.dead:
-            self.action("die", tick * 5)
+        # If death called from state()
+        if self.death:
+            # Perform die action
+            self.action("die", tick * speed_up)
             # Call end of program
-            self.current = len(self.program) - 1
         else:
             self.timing += tick
             if self.timing >= time:

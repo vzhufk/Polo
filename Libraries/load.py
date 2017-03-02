@@ -10,9 +10,8 @@ def image(name, color_key=None):
     fullname = os.path.join('', name)
     try:
         current = pygame.image.load(fullname)
-    except pygame.error as message:
+    except pygame.error:
         print('Cannot load image:', name)
-        raise SystemExit(message)
     current = current.convert_alpha()
     if color_key is not None:
         if color_key is -1:
@@ -56,9 +55,8 @@ def sound(name):
     fullname = os.path.join('src', name)
     try:
         sound = pygame.mixer.Sound(fullname)
-    except pygame.error as message:
+    except pygame.error:
         print('Cannot load sound:', name)
-        raise SystemExit(message)
     return sound
 
 
