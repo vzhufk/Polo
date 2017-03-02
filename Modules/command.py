@@ -24,6 +24,7 @@ class Command(Sprite):
         self.original = self.image
         self.fade = False
         self.countable = countable
+        self.direction = 0
         self.amount = 0
         self.update()
 
@@ -35,7 +36,7 @@ class Command(Sprite):
         surf = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
         if self.fade:
             surf.set_alpha(128)
-        surf.blit(self.original, (0, 0))
+        surf.blit(pygame.transform.rotate(self.original, self.direction * -90), (0, 0))
         if self.countable:
             text = self.font.render(str(self.amount), 2, (0, 0, 0))
             surf.blit(text, (self.rect.width - font.size, 0))

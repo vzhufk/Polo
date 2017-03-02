@@ -14,29 +14,30 @@ sec_color = (106, 106, 106)
 
 class Controls(surface.Surface):
     def __init__(self, pos=position, s=size):
+
+        self.direction = 0
+
+        self.forward = Command("forward", (command.width / 2, command.height / 2))
+        self.back = Command("back", (command.width / 2, command.height / 2 + command.height))
+
+        self.right = Command("right", (command.width / 2 + command.width, command.height / 2))
+        self.left = Command("left", (command.width / 2 + command.width, command.height / 2 + command.height))
+
+        self.lo = Command("lo", (command.width / 2 + 2 * command.width, command.height / 2))
+        self.op = Command("op", (command.width / 2 + 2 * command.width, command.height / 2 + command.height))
+
+        # Because it calls update
         surface.Surface.__init__(self, pos, s)
-        self.init_commands()
 
-    def init_commands(self):
-        """
-        Initialize all available commands
-        :return:
-        """
-        front = Command("forward", (command.width / 2, command.height / 2))
-        back = Command("back", (command.width / 2, command.height / 2 + command.height))
+        self.group.add(self.left)
+        self.group.add(self.right)
+        self.group.add(self.forward)
+        self.group.add(self.back)
+        self.group.add(self.lo)
+        self.group.add(self.op)
 
-        right = Command("right", (command.width / 2 + command.width, command.height / 2))
-        left = Command("left", (command.width / 2 + command.width, command.height / 2 + command.height))
-
-        lo = Command("lo", (command.width / 2 + 2 * command.width, command.height / 2))
-        op = Command("op", (command.width / 2 + 2 * command.width, command.height / 2 + command.height))
-
-        self.group.add(left)
-        self.group.add(right)
-        self.group.add(front)
-        self.group.add(back)
-        self.group.add(lo)
-        self.group.add(op)
+    def update(self):
+        surface.Surface.update(self)
 
     def make(self):
         """
@@ -50,6 +51,20 @@ class Controls(surface.Surface):
                     result = i
                     i.change_amount(-1)
         self.echo = result
+        # To turn direction
+        if self.echo is not None:
+            if i.name == "left":
+                self.direction -= 1 if self.direction > 0 else -3
+                self.direct()
+            elif i.name == "right":
+                self.direction += 1 if self.direction < 3 else -3
+                self.direct()
+
+    def direct(self):
+        self.forward.direction = self.direction
+        self.back.direction = self.direction
+        self.forward.update()
+        self.back.update()
 
     def add(self, item):
         """
@@ -61,6 +76,13 @@ class Controls(surface.Surface):
             for j in item:
                 if j.name == i.name:
                     i.change_amount(1)
+                    # For direction
+                    if j.name == "right":
+                        self.direction -= 1 if self.direction > 0 else -3
+                        self.direct()
+                    elif j.name == "left":
+                        self.direction += 1 if self.direction < 3 else -3
+                        self.direct()
         self.update()
 
     def set(self, name, amount):
@@ -83,3 +105,5 @@ class Controls(surface.Surface):
         """
         for i in lvl.moves.keys():
             self.set(i, lvl.moves[i])
+        self.direction = lvl.direction
+        self.direct()
