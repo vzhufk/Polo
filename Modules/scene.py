@@ -1,3 +1,4 @@
+import load
 import surface
 import varibles
 from robot import Robot
@@ -10,6 +11,8 @@ color = [14, 14, 14]
 speed_up = 25
 time = 500
 
+background_music = "test.wav"
+def_location = "Source/"
 
 # ['name', (0, 0)]
 # 12x9 by 50
@@ -19,6 +22,10 @@ class Scene(surface.Surface):
     def __init__(self, pos=position, s=size, c=color):
         self.robot = Robot()
         surface.Surface.__init__(self, pos, s, c)
+        # Background music
+        # TODO Move this
+        self.background_music = load.sound(def_location + background_music)
+        self.background_music.play(-1)
         # Scene program from engine
         self.program = []
         # Scene running

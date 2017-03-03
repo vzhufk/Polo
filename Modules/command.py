@@ -21,10 +21,15 @@ class Command(Sprite):
         image_path = image_path if image_path is not None else def_location + name + expansion
         self.load_image(image_path)
         self.set_font(font.medium)
+        # Original start ima
         self.original = self.image
-        self.fade = False
+        # Counting on command
         self.countable = countable
+        # Direction of command
         self.direction = 0
+        # Fade out
+        self.fade = False
+        # Available amount of command
         self.amount = 0
         self.update()
 
@@ -108,4 +113,8 @@ class Command(Sprite):
         self.countable = not self.countable
 
     def copy(self):
+        """
+        Try to copy
+        :return:
+        """
         return Command(self.name, (self.rect.x, self.rect.y))

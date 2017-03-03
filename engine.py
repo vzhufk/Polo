@@ -28,13 +28,21 @@ screen_mode = varibles.screen_mode
 class Engine:
     def __init__(self):
         pygame.init()
+        # TODO Refactor it
         self.scene_run = False
+        # Engine pause
         self.pause = False
+        # Set up of window
         os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (0, 30)
+        # Window title
         pygame.display.set_caption(window_title)
+        # Set up window resolution
         self.display = pygame.display.set_mode(screen_resolution)
+        # Sets level
         self.current_level = 1
+        # Clock init for ticks
         self.clock = pygame.time.Clock()
+        # Level load
         self.level = Level(load.get_levels()[self.current_level])
         self.controls = Controls()
         self.program = Program()
@@ -42,13 +50,27 @@ class Engine:
         self.menu = Menu()
 
     def get_level(self):
+        """
+        Returns current level
+        :return:
+        """
         return self.current_level
 
     def set_level(self, new_lvl):
+        """
+        Set level
+        :param new_lvl: int index of level in list
+        :return:
+        """
         self.current_level = new_lvl
         self.load(load.get_levels()[new_lvl])
 
     def load(self, name):
+        """
+        Load level to all modules
+        :param name:
+        :return:
+        """
         self.level = Level(name)
         self.level.load()
         # Pass level to other modules
@@ -57,6 +79,10 @@ class Engine:
         self.scene.level(self.level)
 
     def reload(self):
+        """
+        Reloads level(scene)
+        :return:
+        """
         self.scene.level(self.level)
 
     def blit(self):
@@ -130,6 +156,7 @@ class Engine:
         for i in self.scene.echo:
             if i.name == "finish":
                 self.pause = True
+                self.menu.set_position(pygame.mouse.get_pos())
             elif i.name == "polo":
                 self.setup_scene()
 
@@ -151,7 +178,6 @@ class Engine:
                 self.scene.step(self.clock.tick())
                 self.clock.tick()
                 self.scene.update()
-
             self.event()
 
             if self.scene.done and not self.scene.success:

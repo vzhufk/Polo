@@ -52,7 +52,7 @@ def sound(name):
 
     if not pygame.mixer:
         return NoneSound()
-    fullname = os.path.join('src', name)
+    fullname = name
     try:
         sound = pygame.mixer.Sound(fullname)
     except pygame.error:

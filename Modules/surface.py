@@ -75,6 +75,15 @@ class Surface(pygame.Surface):
     def make(self):
         pass
 
+    def set_position(self, pos):
+        """
+        Sets new windows position
+        :param pos:
+        :return:
+        """
+        self.rect.x = pos[0]
+        self.rect.y = pos[1]
+
     def set_font(self, some_font):
         """
         Sets font for surf
