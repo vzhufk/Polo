@@ -11,7 +11,8 @@ color = [14, 14, 14]
 speed_up = 25
 time = 500
 
-background_music = "test.wav"
+background_music = "background.wav"
+background_music_volume = 0.15
 def_location = "Source/"
 
 # ['name', (0, 0)]
@@ -23,9 +24,9 @@ class Scene(surface.Surface):
         self.robot = Robot()
         surface.Surface.__init__(self, pos, s, c)
         # Background music
-        # TODO Move this
         self.background_music = load.sound(def_location + background_music)
         self.background_music.play(-1)
+        self.background_music.set_volume(background_music_volume)
         # Scene program from engine
         self.program = []
         # Scene running
@@ -98,14 +99,10 @@ class Scene(surface.Surface):
         elif command == "back":
             self.robot.move(-tick / time)
         elif command == "left":
-            self.robot.turn_left()
-            self.current += 1
-            self.timing %= time
+            self.robot.turn(-tick / time)
             self.robot.update()
         elif command == "right":
-            self.robot.turn_right()
-            self.current += 1
-            self.timing %= time
+            self.robot.turn(tick / time)
             self.robot.update()
 
     def state(self):
@@ -126,6 +123,8 @@ class Scene(surface.Surface):
                     if i.name == "finish":
                         self.success = True
         # Means death (if robot out of tiles)
+        if not self.death and not stand[0]:
+            self.robot.death_sound.play()
         self.death = not stand[0]
 
     def start(self):

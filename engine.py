@@ -28,8 +28,6 @@ screen_mode = varibles.screen_mode
 class Engine:
     def __init__(self):
         pygame.init()
-        # TODO Refactor it
-        self.scene_run = False
         # Engine pause
         self.pause = False
         # Set up of window

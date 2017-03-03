@@ -20,8 +20,6 @@ option_size = (160, 60)
 option_little_size = (30, 60)
 option_text_pos = (0, 20)
 
-
-# TODO I need somehow set level option, and get when its clicked. So I should change this:
 class Option(sprite.Sprite):
     def __init__(self, name="option", caption="sample text", place=(0, 0), text_place=(0, 0), s=option_size):
         sprite.Sprite.__init__(self, name, place, s)

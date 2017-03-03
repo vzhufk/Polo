@@ -151,8 +151,6 @@ class Program(surface.Surface):
         Gets program
         :return: list of sprites
         """
-        # TODO Should I modify it to list of strings???
-        # TODO Just for now
         tmp = []
         for i in self.program:
             tmp.append(str(i))

@@ -12,11 +12,12 @@ height = 50
 width = 50
 size = (50, 50)
 name = "polo"
-death_path = "long_explosion"
+death = "long_explosion"
 def_location = "Source/Prop/"
 expansion = ".png"
 
-
+sound_explosion = "bam-motherfucker.wav"
+sound_volume = 0.4
 # Direction - clock like
 # 0 - top
 # 1 - right
@@ -24,15 +25,17 @@ expansion = ".png"
 # 3 - left
 
 
-# TODO Make death animation (rotate and scale down) :)
+# TODO Think about rotate and scale down death :)
 class Robot(sprite.Sprite):
     def __init__(self, n=name, i_n=None, placement=(50, 50)):
         sprite.Sprite.__init__(self, n, placement)
         i_n = i_n if i_n is not None else def_location + n + expansion
         self.load_image(i_n)
         self.dead = False
-        self.death_sprites = load.load_sliced_sprite(def_location + death_path + expansion, width, height)
+        self.death_sprites = load.load_sliced_sprite(def_location + death + expansion, width, height)
         self.death_sprite_current = 0.0
+        self.death_sound = load.sound(def_location + sound_explosion)
+        self.death_sound.set_volume(sound_volume)
         self.original = self.image
         self.fx = float(self.rect.x)
         self.fy = float(self.rect.y)
@@ -44,14 +47,28 @@ class Robot(sprite.Sprite):
         self.death_sprite_current = 0.0
         self.update()
 
+    def turn(self, value):
+        """
+        Turns robot on degree
+        :param value: float 0<=float<=3 1 = 90 ; value = 2 == Pi
+        :return:
+        """
+        self.direction = float(self.direction) + float(value)
+        self.turn_normalize()
+
+    def turn_normalize(self):
+        if self.direction < 0:
+            self.direction += 4
+        elif self.direction >= 4:
+            self.direction -= 4
+
     def turn_left(self):
         """
         Turns robot left
         :return:
         """
         self.direction -= 1
-        self.direction += 4
-        self.direction %= 4
+        self.turn_normalize()
 
     def turn_right(self):
         """
@@ -59,7 +76,7 @@ class Robot(sprite.Sprite):
         :return:
         """
         self.direction += 1
-        self.direction %= 4
+        self.turn_normalize()
 
     def move(self, percent):
         """
@@ -67,7 +84,9 @@ class Robot(sprite.Sprite):
         :param percent: -1 <= percent <= 1 of one step
         :return:
         """
-        if self.direction % 2 == 0:
+
+        self.direction = int(round(self.direction))
+        if int(round(self.direction)) % 2 == 0:
             self.fy += (1 if self.direction == 2 else -1) * height * percent
             self.rect.y = int(self.fy)
         else:
@@ -81,6 +100,8 @@ class Robot(sprite.Sprite):
         """
         if not self.dead:
             self.image = pygame.transform.rotate(self.original, self.direction * -90)
+            # To rotate around center
+            self.rect = self.image.get_rect(center=self.rect.center)
         sprite.Sprite.update(self)
 
     def place(self, cell):
