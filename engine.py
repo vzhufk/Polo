@@ -42,6 +42,8 @@ class Engine:
         self.clock = pygame.time.Clock()
         # Level load
         self.level = Level(load.get_levels()[self.current_level])
+        # Sound
+        self.sound = True
         self.controls = Controls()
         self.program = Program()
         self.scene = Scene()
@@ -76,6 +78,13 @@ class Engine:
         self.controls.level(self.level)
         self.scene.level(self.level)
 
+    def check_sound(self):
+        # TODO Mute sound in all modules
+        if self.sound:
+            pygame.mixer.unpause()
+        else:
+            pygame.mixer.pause()
+
     def reload(self):
         """
         Reloads level(scene)
@@ -109,11 +118,10 @@ class Engine:
 
                 """If was pressed key while robot was moving"""
                 """Just reload"""
-                # TODO Or speed it up???
                 # I can just change time in scene to speed up
                 if self.scene.launch and pygame.mouse.get_pressed()[0]:
-                    self.reload()
-
+                    # Speed up scene
+                    self.scene.speed_up = True
             self.invoker()
 
     def invoker(self):
@@ -143,18 +151,22 @@ class Engine:
 
     def menu_handler(self):
         for i in self.menu.get_echo():
-            if str(i) == "continue":
+            if str(i) == "play":
                 self.pause = False
             elif str(i) == "exit":
                 self.exit()
-            elif str(i) == "level":
+            elif str(i) == "choose":
                 self.load(i.caption)
+            elif str(i) == "sound":
+                self.sound = i.switch_index == 1
+                self.check_sound()
+            elif str(i) == "about":
+                varibles.about()
 
     def scene_handler(self):
         for i in self.scene.echo:
             if i.name == "finish":
                 self.pause = True
-                self.menu.set_position(pygame.mouse.get_pos())
             elif i.name == "polo":
                 self.setup_scene()
 

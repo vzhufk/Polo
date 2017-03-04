@@ -12,6 +12,7 @@ def image(name, color_key=None):
         current = pygame.image.load(fullname)
     except pygame.error:
         print('Cannot load image:', name)
+        return None
     current = current.convert_alpha()
     if color_key is not None:
         if color_key is -1:

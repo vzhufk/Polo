@@ -43,7 +43,7 @@ class Sprite(pygame.sprite.Sprite):
         :return:
         """
         self.image, rect = image(image_path, -1)
-        self.rect.width, self.rect.height = rect.width, rect.height
+        # self.rect.width, self.rect.height = rect.width, rect.height
 
     def set_font(self, some_font):
         """
@@ -81,6 +81,17 @@ class Sprite(pygame.sprite.Sprite):
         :return: Sprite current position related to drawing surface
         """
         return self.rect.x, self.rect.y
+
+    def place_image(self, im, place):
+        """
+        Placing image on surface in some place
+        :param im: pygame.image
+        :param place: tuple (x, y)
+        :return:
+        """
+        surf = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
+        surf.blit(im, place)
+        self.image = surf
 
     def collision(self, point):
         """

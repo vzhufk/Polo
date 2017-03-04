@@ -8,12 +8,13 @@ position = (0, 0)
 size = (varibles.screen_resolution[0], 0.75 * varibles.screen_resolution[1])
 color = [14, 14, 14]
 
-speed_up = 25
+speed_up = 5
 time = 500
 
 background_music = "background.wav"
 background_music_volume = 0.15
 def_location = "Source/"
+
 
 # ['name', (0, 0)]
 # 12x9 by 50
@@ -41,6 +42,8 @@ class Scene(surface.Surface):
         self.current = -1
         # Current scene time
         self.timing = 0
+        # Speed up option
+        self.speed_up = False
         self.update()
 
     def update(self):
@@ -135,6 +138,7 @@ class Scene(surface.Surface):
         self.done = False
         self.death = False
         self.success = False
+        self.speed_up = False
         self.timing = 0
         self.launch = len(self.program) > 0
         self.current = 0 if self.current < 0 else self.current
@@ -148,6 +152,7 @@ class Scene(surface.Surface):
         self.robot.flush()
         self.start()
         self.launch = False
+        self.speed_up = False
         self.current = -1
 
     def step(self, tick):
@@ -159,9 +164,11 @@ class Scene(surface.Surface):
         # If death called from state()
         if self.death:
             # Perform die action
-            self.action("die", tick * speed_up)
+            self.action("die", tick * speed_up * speed_up)
             # Call end of program
         else:
+            if self.speed_up:
+                tick *= speed_up
             self.timing += tick
             if self.timing >= time:
                 '''If tick get into 2 different commands in program'''

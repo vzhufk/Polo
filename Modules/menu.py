@@ -10,21 +10,68 @@ import sprite
 import surface
 import varibles
 
-position = (0.4 * varibles.screen_resolution[0], 0.3 * varibles.screen_resolution[1])
-size = (0.2 * varibles.screen_resolution[0], 0.4 * varibles.screen_resolution[1])
+position = (25, 0.3 * varibles.screen_resolution[1])
+size = (varibles.screen_resolution[0] - 50, 0.25 * varibles.screen_resolution[1])
 
 color = (183, 183, 183)
 sec_color = (106, 106, 106)
 
-option_size = (160, 60)
-option_little_size = (30, 60)
+option_size = (150, 150)
+option_little_size = (150, 50)
 option_text_pos = (0, 20)
+option_location = "Source/Menu/"
+option_expansion = ".png"
 
-class Option(sprite.Sprite):
-    def __init__(self, name="option", caption="sample text", place=(0, 0), text_place=(0, 0), s=option_size):
+
+class OptionImage(sprite.Sprite):
+    def __init__(self, name="option", place=(0, 0), s=option_size, image_place=(25, 25), switch=False):
+        sprite.Sprite.__init__(self, name, place, s)
+        self.flick = False
+        self.switch = switch
+
+        if self.switch:
+            self.images = []
+            self.load_image(option_location + name + "-off" + option_expansion)
+            self.place_image(self.image, image_place)
+            self.images.append(self.image)
+            self.load_image(option_location + name + "-on" + option_expansion)
+            self.place_image(self.image, image_place)
+            self.images.append(self.image)
+            self.switch_index = 1
+        else:
+            self.load_image(option_location + name + option_expansion)
+            # Place
+            self.place_image(self.image, image_place)
+        # And save
+        self.original = self.image
+
+        self.update()
+
+    def toggle(self):
+        """
+        Toggle switch option
+        :return:
+        """
+        if self.switch:
+            self.switch_index += 1
+            self.switch_index %= len(self.images)
+            self.original = self.images[self.switch_index]
+
+    def update(self):
+        surf = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
+        if self.flick:
+            surf.fill(sec_color)
+        surf.blit(self.original, (0, 0))
+        self.image = surf
+
+
+class OptionText(sprite.Sprite):
+    def __init__(self, name="option", caption="sample text", place=(0, 0), text_place=(0, 0), s=option_size,
+                 switch=False):
         sprite.Sprite.__init__(self, name, place, s)
         self.caption = caption
         self.caption_place = text_place
+        self.switch = switch
         self.flick = False
         self.set_font(font.heavy)
         self.update()
@@ -38,44 +85,44 @@ class Option(sprite.Sprite):
         self.image = surf
 
     def set_caption(self, new_caption):
-        self.caption = new_caption
+        """
+        Sets new caption
+        :param new_caption: text for option
+        :return:
+        """
+        self.caption = str(new_caption)
+        self.update()
 
 
 class Menu(surface.Surface):
     def __init__(self, pos=position, s=size, level=0, c=color):
         surface.Surface.__init__(self, pos, s, c)
+        self.level_group = pygame.sprite.Group()
         self.current_level = level
-        self.level_count = len(load.get_levels(varibles.level_path))
+        self.levels = load.get_levels(varibles.level_path)
         self.was_hover = None
         self.active = True
-        self.init()
 
-    def init(self):
-        """
-        Init buttons
-        :return:
-        """
-        cont_opt = Option("continue", "Continue", (0, 0), (25, option_text_pos[1]))
-        next_opt = Option("prev", "<", (0, option_size[1]), (0, option_text_pos[1]), option_little_size)
-        prev_opt = Option("next", ">", (option_size[0] - option_little_size[0], option_size[1]),
-                          (option_little_size[0] - 10, option_text_pos[1]), option_little_size)
-        # Because I need it to change thought
-        self.level_opt = Option("level", load.get_levels()[self.current_level], (option_little_size[0], option_size[1]),
-                                (20, option_text_pos[1]), (option_size[0] - 2 * option_little_size[0], option_size[1]))
-        sound_opt = Option("sound", "Sound", (0, option_size[1] * 2), (40, option_text_pos[1]))
-        exit_opt = Option("exit", "Exit", (0, option_size[1] * 3), (50, option_text_pos[1]))
+        self.level_opt = OptionImage("level", (option_size[0], 0))
+        self.prev_opt = OptionImage("prev", (option_size[0], 100), option_little_size, (50, 0))
+        self.next_opt = OptionImage("next", (option_size[0], 0), option_little_size, (50, 0))
+        self.choose_opt = OptionText("choose", self.levels[self.current_level], (150, 50), (0, 15), option_little_size)
 
-        self.group.add(cont_opt)
+        self.level_group.add(self.level_opt, self.prev_opt, self.next_opt, self.choose_opt)
+
+        cont_opt = OptionImage("play", (0, 0), )
+        sound_opt = OptionImage("sound", (option_size[0] * 2, 0), switch=True)
+        about_opt = OptionImage("about", (option_size[0] * 3, 0))
+        exit_opt = OptionImage("exit", (option_size[0] * 4, 0))
+
         self.group.add(self.level_opt)
-        self.group.add(next_opt)
-        self.group.add(prev_opt)
-        self.group.add(sound_opt)
-        self.group.add(exit_opt)
-
-    def update_level(self):
-        self.level_opt.set_caption(load.get_levels()[self.current_level])
+        self.group.add(cont_opt, about_opt, sound_opt, exit_opt)
 
     def make(self):
+        """
+        Handles all events
+        :return:
+        """
         # For hovered elements
         if self.was_hover is not None:
             for i in self.was_hover:
@@ -87,11 +134,32 @@ class Menu(surface.Surface):
                 i.update()
             self.was_hover = self.hover
 
+        # Toggle switches
         if self.echo is not None:
             for i in self.echo:
-                if i.name == "prev":
+                if i.switch:
+                    i.toggle()
+
+        # Level selector
+        if self.hover is not None:
+            level_hover = False
+            for i in self.hover:
+                for j in self.level_group:
+                    if i == j:
+                        level_hover = True
+            if level_hover:
+                self.group.add(self.choose_opt, self.next_opt, self.prev_opt)
+                self.group.remove(self.level_opt)
+            else:
+                self.group.remove(self.choose_opt, self.next_opt, self.prev_opt)
+                self.group.add(self.level_opt)
+
+        # Level scroll
+        if self.echo is not None:
+            for i in self.echo:
+                if i == self.next_opt:
+                    self.current_level += 1 if self.current_level + 1 < len(self.levels) else 0
+                    self.choose_opt.set_caption(self.levels[self.current_level])
+                elif i == self.prev_opt:
                     self.current_level -= 1 if self.current_level > 0 else 0
-                    self.update_level()
-                elif i.name == "next":
-                    self.current_level += 1 if self.current_level < self.level_count - 1 else 0
-                    self.update_level()
+                    self.choose_opt.set_caption(self.levels[self.current_level])
