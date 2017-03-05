@@ -8,6 +8,9 @@ size = (50, 50)
 def_location = "Source/"
 expansion = ".png"
 
+color = (200, 200, 200)
+sec_color = (106, 106, 106)
+
 
 class Command(Sprite):
     def __init__(self, name, placement=(0, 0), image_path=None, s=size, countable=True):
@@ -21,6 +24,7 @@ class Command(Sprite):
         image_path = image_path if image_path is not None else def_location + name + expansion
         self.load_image(image_path)
         self.set_font(font.medium)
+        self.big_font = font.shaded
         # Original start ima
         self.original = self.image
         # Counting on command
@@ -29,6 +33,8 @@ class Command(Sprite):
         self.direction = 0
         # Fade out
         self.fade = False
+        # Hover
+        self.hover = False
         # Available amount of command
         self.amount = 0
         self.update()
@@ -39,13 +45,35 @@ class Command(Sprite):
         :return:
         """
         surf = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
-        if self.fade:
-            surf.set_alpha(128)
         surf.blit(pygame.transform.rotate(self.original, self.direction * -90), (0, 0))
         if self.countable:
-            text = self.font.render(str(self.amount), 2, (0, 0, 0))
-            surf.blit(text, (self.rect.width - font.size, 0))
+            if self.hover:
+                text = self.big_font.render(str(self.amount), 2, (0, 0, 0))
+                surf.blit(text, (self.rect.width - 32, 0))
+            else:
+                text = self.font.render(str(self.amount), 2, (0, 0, 0))
+                surf.blit(text, (self.rect.width - font.size, 0))
         self.image = surf
+
+    def delta_direction(self, delta):
+        """Changes direction by delta"""
+        self.direction += delta
+        while self.direction < 0:
+            self.direction += 4
+        while self.direction > 3:
+            self.direction -= 4
+
+    def set_direction(self, direction):
+        """
+        Set direction
+        :param direction:
+        :return:
+        """
+        self.direction = int(direction)
+        while self.direction < 0:
+            self.direction += 4
+        while self.direction > 3:
+            self.direction -= 4
 
     def set_amount(self, amount):
         """

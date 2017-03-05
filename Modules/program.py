@@ -26,6 +26,8 @@ class Program(surface.Surface):
         self.echo = None
         # End of special needs
 
+        self.direction = 0
+
         self.page_prev = Command("prev_page", (0, command.height))
         self.page_next = Command("next_page", (size[0] - command.width, command.height))
         self.set_font(font.heavy)
@@ -143,30 +145,44 @@ class Program(surface.Surface):
         :param index: item index
         :return:
         """
-        # Turn forward and back in program if some turn was deleted
-        current = self.program[index]
-        if str(current) == "left" or str(current) == "right":
-            for i in range(index, len(self.program)):
-                if str(current) == "left":
-                    if str(self.program[i]) == "forward" or str(self.program[i]) == "back":
-                        self.program[i].direction += 1 if self.program[i].direction < 3 else -3
-                elif str(current) == "right":
-                    if str(self.program[i]) == "forward" or str(self.program[i]) == "back":
-                        self.program[i].direction -= 1 if self.program[i].direction > 0 else -3
-
+        tmp = self.program[index]
         self.program.pop(index)
 
-    def get_program(self):
+        # Turn all in program when turn deleted
+        if len(self.program) > 0 and (str(tmp) == "left" or str(tmp) == "right"):
+            self.program[0].direction = self.direction
+            for i in range(1, len(self.program)):
+                if str(self.program[i]) == "forward" or str(self.program[i]) == "back":
+                    self.program[i].set_direction(self.program[i - 1].direction + self.get_delta_direction(i - 1, i))
+
+    def get_program(self, start=0, end=None):
         """
         Gets program
         :return: list of sprites
         """
+        if end is None:
+            end = len(self.program)
         tmp = []
-        for i in self.program:
+        for i in self.program[start:end]:
             tmp.append(str(i))
 
         tmp = decode(tmp)
         return tmp
+
+    def get_delta_direction(self, start=0, end=None):
+        """
+        Decodes program and returns direction change from the beginning
+        """
+        if end is None:
+            end = len(self.program)
+
+        direction = 0
+        for i in self.get_program(start, end):
+            if str(i) == "right":
+                direction += 1
+            elif str(i) == "left":
+                direction -= 1
+        return direction
 
     def flush(self):
         """

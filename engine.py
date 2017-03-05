@@ -77,6 +77,8 @@ class Engine:
         self.program = Program()
         self.controls.level(self.level)
         self.scene.level(self.level)
+        # For direct moves
+        self.program.direction = int(self.scene.robot.direction)
 
     def check_sound(self):
         # TODO Mute sound in all modules
@@ -129,14 +131,19 @@ class Engine:
         Invokes module calls
         :return:
         """
+
         """Controls Echos"""
         if self.controls.get_echo() is not None:
             self.program.add(self.controls.get_echo())
+            # Direct turn
+            self.controls.set_delta_direct(self.program.get_delta_direction())
             self.controls.echo_out()
 
         """Program Echos"""
         if self.program.get_echo() is not None:
             self.controls.add(self.program.get_echo())
+            # Direct turn
+            self.controls.set_delta_direct(self.program.get_delta_direction())
             self.program.echo_out()
 
         """Scene Echos"""
