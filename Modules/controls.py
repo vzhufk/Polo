@@ -24,7 +24,7 @@ class Controls(surface.Surface):
         self.lo = Command("lo", (command.width / 2 + 2 * command.width, command.height / 2))
         self.op = Command("op", (command.width / 2 + 2 * command.width, command.height / 2 + command.height))
 
-        # LOOP WAS CALLED
+        # LOOPing control
         self.loop = 0
 
         # Because it calls update
