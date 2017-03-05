@@ -24,15 +24,13 @@ class Controls(surface.Surface):
         self.lo = Command("lo", (command.width / 2 + 2 * command.width, command.height / 2))
         self.op = Command("op", (command.width / 2 + 2 * command.width, command.height / 2 + command.height))
 
+        # LOOP WAS CALLED
+        self.loop = 0
+
         # Because it calls update
         surface.Surface.__init__(self, pos, s)
 
-        self.group.add(self.left)
-        self.group.add(self.right)
-        self.group.add(self.forward)
-        self.group.add(self.back)
-        self.group.add(self.lo)
-        self.group.add(self.op)
+        self.group.add(self.left, self.right, self.forward, self.back, self.lo, self.op)
 
     def update(self):
         surface.Surface.update(self)
@@ -42,23 +40,46 @@ class Controls(surface.Surface):
         Decrement clicked command
         :return: echo it to other modules
         """
-        result = None
+        # OP without LO
+        if self.echo is not None:
+            for i in self.echo:
+                if str(i) == "op" and self.loop == 0:
+                    self.echo = None
+                    break
+
+        result = []
         if self.echo is not None:
             for i in self.echo:
                 if i.get_amount() > 0:
-                    result = i
+                    result.append(i)
                     i.change_amount(-1)
-        self.echo = result
+                    # If right click place all number of command
+                    if self.mouse.get_pressed()[2]:
+                        while i.get_amount() > 0:
+                            result.append(i)
+                            i.change_amount(-1)
+        self.echo = result if len(result) > 0 else None
+
         # To turn direction
         if self.echo is not None:
-            if i.name == "left":
-                self.direction -= 1 if self.direction > 0 else -3
-                self.direct()
-            elif i.name == "right":
-                self.direction += 1 if self.direction < 3 else -3
-                self.direct()
+            self.loop = self.op.amount - self.lo.amount
+            for i in self.echo:
+                if str(i) == "left":
+                    for _ in range(0, 2 ** self.loop):
+                        self.direction -= 1 if self.direction > 0 else -3
+                    self.direct()
+                elif str(i) == "right":
+                    for _ in range(0, 2 ** self.loop):
+                        self.direction += 1 if self.direction < 3 else -3
+                    self.direct()
+                elif self.loop > 0:
+                    i.direction = 0
 
     def direct(self):
+        """
+        Directing forward and back commands fro comfortable view
+        :return:
+        """
         self.forward.direction = self.direction
         self.back.direction = self.direction
         self.forward.update()
@@ -91,7 +112,7 @@ class Controls(surface.Surface):
         :return:
         """
         for i in self.group:
-            if name == i.name:
+            if name == str(i):
                 i.set_amount(int(amount))
         self.update()
 

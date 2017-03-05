@@ -21,6 +21,7 @@ class Surface(pygame.Surface):
         self.group = pygame.sprite.Group()
         self.color = c
         self.font = font
+        self.mouse = None
         self.hover = None
         self.echo = None
         self.update()
@@ -68,7 +69,8 @@ class Surface(pygame.Surface):
         self.hover = None
         if self.is_in(mouse.get_pos()):
             self.hover = (self.collide_all(mouse.get_pos()))
-            if mouse.get_pressed()[0]:
+            self.mouse = mouse
+            if mouse.get_pressed()[0] or mouse.get_pressed()[2]:
                 self.echo = self.hover
             self.make()
 

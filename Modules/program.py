@@ -33,6 +33,8 @@ class Program(surface.Surface):
         self.program = []
         self.page = 0
         self.max_page = 0
+        self.delete_array = False
+
         self.init()
         self.update()
 
@@ -71,16 +73,6 @@ class Program(surface.Surface):
             self.page = 0
         if self.page > self.max_page:
             self.page = self.max_page
-        ''' Temporary removed
-        if self.page == 0:
-            self.page_prev.fade_out()
-        if 0 < self.page:
-            self.page_prev.fade_in()
-        if self.page < self.max_page:
-            self.page_next.fade_in()
-        if self.page == self.max_page:
-            self.page_next.fade_out()
-        '''
         self.listing_counter = self.font.render("" + str(self.page + 1) + "/" + str(self.max_page + 1) + "", 2,
                                                 text_color)
 
@@ -97,11 +89,9 @@ class Program(surface.Surface):
         for i in range(0, len(self.program)):
             if self.page * commands <= i < (self.page + 1) * commands:
                 place += command.width
-                tmp = self.program[i].copy()
-                tmp.set_placement((place, command.width))
-                tmp.uncountable()
-                tmp.update()
-                self.group.add(tmp)
+                self.program[i].set_placement((place, command.width))
+                self.program[i].update()
+                self.group.add(self.program[i])
 
     def make(self):
         """
@@ -111,32 +101,41 @@ class Program(surface.Surface):
         echo = []
         if self.echo is not None:
             for i in self.echo:
-                if i.name == "prev_page":
+                if i == self.page_prev:
                     self.page -= 1
                     self.echo = None
-                elif i.name == "next_page":
+                elif i == self.page_next:
                     self.page += 1
                     self.echo = None
                 else:
+                    # Delete clicked item
                     echo.append(i)
-                    # because we have page turn command which adds extra 1
-                    index = 0  # -1
+                    index = 0
                     index += (self.page * commands)
                     index += i.rect.x / i.rect.w
                     self.delete(int(index) - 1)
+                    # Right click - delete everything to the end of program
+                    if (self.mouse is not None and self.mouse.get_pressed()[2]) or str(i) == "lo":
+                        for j in range(0, len(self.program) - int(index) + 1):
+                            echo.append(self.program[len(self.program) - 1])
+                            self.delete(len(self.program) - 1)
         self.echo = echo
 
-    def add(self, item):
+    def add(self, items):
         """
         Adds new command in current program
-        :param item: chosen sprite(command)
+        :param items: chosen sprites(command)
         :return:
         """
-        self.program.append(item)
-        # If page full get next
-        if len(self.program) % commands == 1:
-            self.page += 1
-        self.update()
+        if items is not None:
+            for i in items:
+                tmp = i.copy()
+                tmp.uncountable()
+                self.program.append(tmp)
+                # If page full get next
+                if len(self.program) % commands == 1:
+                    self.page += 1
+                self.update()
 
     def delete(self, index):
         """
@@ -144,6 +143,17 @@ class Program(surface.Surface):
         :param index: item index
         :return:
         """
+        # Turn forward and back in program if some turn was deleted
+        current = self.program[index]
+        if str(current) == "left" or str(current) == "right":
+            for i in range(index, len(self.program)):
+                if str(current) == "left":
+                    if str(self.program[i]) == "forward" or str(self.program[i]) == "back":
+                        self.program[i].direction += 1 if self.program[i].direction < 3 else -3
+                elif str(current) == "right":
+                    if str(self.program[i]) == "forward" or str(self.program[i]) == "back":
+                        self.program[i].direction -= 1 if self.program[i].direction > 0 else -3
+
         self.program.pop(index)
 
     def get_program(self):

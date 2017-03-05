@@ -117,4 +117,6 @@ class Command(Sprite):
         Try to copy
         :return:
         """
-        return Command(self.name, (self.rect.x, self.rect.y))
+        tmp = Command(self.name, (self.rect.x, self.rect.y))
+        tmp.direction = self.direction
+        return tmp
