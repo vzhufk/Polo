@@ -2,12 +2,7 @@
 # zhufyakvv@gmail.com
 # github.com/zhufyakvv
 # 19.01.2017
-import pygame
-from pygame.rect import Rect
-
-import font
-import load
-from sprite import Sprite
+from Modules.sprite import Sprite
 
 location = "Source/Tiles/"
 expansion = ".png"

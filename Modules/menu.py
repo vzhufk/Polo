@@ -4,11 +4,11 @@
 # 11.02.2017
 import pygame
 
-import font
-import load
-import sprite
-import surface
 import varibles
+from Libraries import load
+from Modules import sprite
+from Modules import surface
+from Source import font
 
 position = (25, 0.3 * varibles.screen_resolution[1])
 size = (varibles.screen_resolution[0] - 50, 0.25 * varibles.screen_resolution[1])
@@ -80,8 +80,10 @@ class OptionText(sprite.Sprite):
         surf = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
         if self.flick:
             surf.fill(sec_color)
+        size = self.font.size(self.caption)
+        place = ((self.rect.w - size[0]) / 2, (self.rect.h - size[1]) / 2)
         text = self.font.render(self.caption, 2, (0, 0, 0))
-        surf.blit(text, self.caption_place)
+        surf.blit(text, place)
         self.image = surf
 
     def set_caption(self, new_caption):

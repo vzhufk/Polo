@@ -1,7 +1,6 @@
-import surface
-
 import varibles
 from Modules import command
+from Modules import surface
 from Modules.command import Command
 
 position = (0.75 * varibles.screen_resolution[0], 0.75 * varibles.screen_resolution[1])

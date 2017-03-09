@@ -4,9 +4,9 @@
 # 14.01.2017
 
 import Source.font as font
-import load
-import sprite
+from Libraries import load
 from Libraries.load import *
+from Modules import sprite
 
 height = 50
 width = 50

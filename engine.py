@@ -3,13 +3,13 @@ import sys
 
 import pygame
 
-import load
+import Libraries.load as load
 import varibles
 from Modules.controls import Controls
+from Modules.menu import Menu
 from Modules.program import Program
+from Modules.scene import Scene
 from level import Level
-from menu import Menu
-from scene import Scene
 
 FPS = varibles.FPS
 window_title = varibles.window_title

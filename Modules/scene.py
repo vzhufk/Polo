@@ -1,8 +1,9 @@
-import load
-import surface
 import varibles
-from robot import Robot
-from tile import Tile
+
+from Libraries import load
+from Modules import surface
+from Modules.robot import Robot
+from Modules.tile import Tile
 
 position = (0, 0)
 size = (varibles.screen_resolution[0], 0.75 * varibles.screen_resolution[1])

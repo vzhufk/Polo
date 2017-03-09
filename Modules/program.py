@@ -1,11 +1,11 @@
 import pygame
 
-import font
-import surface
 import varibles
+from Libraries.decode import decode
 from Modules import command
+from Modules import surface
 from Modules.command import Command
-from decode import decode
+from Source import font
 
 position = (0, 0.75 * varibles.screen_resolution[1])
 size = (0.75 * varibles.screen_resolution[0], 0.25 * varibles.screen_resolution[1])
@@ -154,6 +154,8 @@ class Program(surface.Surface):
             for i in range(1, len(self.program)):
                 if str(self.program[i]) == "forward" or str(self.program[i]) == "back":
                     self.program[i].set_direction(self.program[i - 1].direction + self.get_delta_direction(i - 1, i))
+            if not str(self.program[0]) == "forward" and not str(self.program[0]) == "back":
+                self.program[0].direction = 0
 
     def get_program(self, start=0, end=None):
         """

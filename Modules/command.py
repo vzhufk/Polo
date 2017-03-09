@@ -1,6 +1,6 @@
 import Source.font as font
 from Libraries.load import *
-from sprite import Sprite
+from Modules.sprite import Sprite
 
 height = 50
 width = 50
