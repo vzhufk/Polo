@@ -113,6 +113,6 @@ class Surface(pygame.Surface):
         Flush to start state
         :return:
         """
-        pygame.sprite.Group()
+        self.group = pygame.sprite.Group()
         self.hover = None
         self.echo = None

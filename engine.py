@@ -49,6 +49,21 @@ class Engine:
         self.scene = Scene()
         self.menu = Menu()
 
+    def update(self):
+        """
+        Updating parts of scene
+        :return:
+        """
+        mouse = pygame.mouse.get_pos()
+        if self.scene.is_in(mouse):
+            pygame.display.update(self.scene.rect)
+        elif self.program.is_in(mouse) or self.controls.is_in(mouse):
+            pygame.display.update(self.program.rect)
+            pygame.display.update(self.controls.rect)
+        elif self.menu.is_in(mouse) and self.pause:
+            pygame.display.update(self.menu.rect)
+
+
     def get_level(self):
         """
         Returns current level
@@ -190,6 +205,8 @@ class Engine:
     def run(self):
         self.blit()
         self.pause = True
+        # To Draw All
+        pygame.display.flip()
         while True:
             self.blit()
             if self.scene.launch:
@@ -201,8 +218,7 @@ class Engine:
             if self.scene.done and not self.scene.success:
                 print("And you failed :)")
                 self.reload()
-            pygame.display.flip()
-            pygame.display.update()
+            self.update()
             # TODO FPS LOCK
 
     def exit(self):
