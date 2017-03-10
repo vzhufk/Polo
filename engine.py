@@ -114,9 +114,10 @@ class Engine:
             if self.pause:
                 self.menu.event(pygame.mouse)
             else:
-                self.controls.event(pygame.mouse)
-                self.program.event(pygame.mouse)
-                self.scene.event(pygame.mouse)
+                if not self.scene.launch:
+                    self.controls.event(pygame.mouse)
+                    self.program.event(pygame.mouse)
+                    self.scene.event(pygame.mouse)
 
                 """If was pressed key while robot was moving"""
                 """Just reload"""

@@ -3,7 +3,6 @@
 # github.com/zhufyakvv
 # 22.02.2017
 
-import numpy
 import pygame
 
 import varibles
@@ -44,7 +43,7 @@ class Surface(pygame.Surface):
         :param point:
         :return:
         """
-        return numpy.subtract(point, (self.rect.x, self.rect.y))
+        return point[0] - self.rect.x, point[1] - self.rect.y
 
     def collide_all(self, point):
         """
@@ -110,6 +109,10 @@ class Surface(pygame.Surface):
         self.echo = None
 
     def flush(self):
-        self.group = pygame.sprite.Group()
+        """
+        Flush to start state
+        :return:
+        """
+        pygame.sprite.Group()
         self.hover = None
         self.echo = None
