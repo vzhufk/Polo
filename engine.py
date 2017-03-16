@@ -16,7 +16,6 @@ window_title = varibles.window_title
 screen_resolution = varibles.screen_resolution
 screen_mode = varibles.screen_mode
 
-
 '''
     TODO TOTHINK Can try some double "thread" mode. We have two robots. And commands for them the same, but positions
     are different.
@@ -35,7 +34,7 @@ class Engine:
         # Window title
         pygame.display.set_caption(window_title)
         # Set up window resolution
-        self.display = pygame.display.set_mode(screen_resolution)
+        self.display = pygame.display.set_mode(screen_resolution)  # pygame.FULLSCREEN
         # Sets level
         self.current_level = 1
         # Clock init for ticks
@@ -49,20 +48,38 @@ class Engine:
         self.scene = Scene()
         self.menu = Menu()
 
+    def update_all(self):
+        """
+        Updating all screen.
+        :return:
+        """
+        self.display.blit(self.controls, self.controls.rect)
+        self.display.blit(self.program, self.program.rect)
+        self.display.blit(self.scene, self.scene.rect)
+
+        if self.pause:
+            self.display.blit(self.menu, self.menu.rect)
+            # TODO Maybe Blur effect in pause
+
+        pygame.display.flip()
+
     def update(self):
         """
         Updating parts of scene
         :return:
         """
         mouse = pygame.mouse.get_pos()
-        if self.scene.is_in(mouse):
-            pygame.display.update(self.scene.rect)
+        if self.pause:
+            self.display.blit(self.menu, self.menu.rect)
+            pygame.display.update(self.menu.rect)
         elif self.program.is_in(mouse) or self.controls.is_in(mouse):
+            self.display.blit(self.controls, self.controls.rect)
+            self.display.blit(self.program, self.program.rect)
             pygame.display.update(self.program.rect)
             pygame.display.update(self.controls.rect)
-        elif self.menu.is_in(mouse) and self.pause:
-            pygame.display.update(self.menu.rect)
-
+        elif self.scene.is_in(mouse) or self.scene.launch:
+            self.display.blit(self.scene, self.scene.rect)
+            pygame.display.update(self.scene.rect)
 
     def get_level(self):
         """
@@ -79,6 +96,7 @@ class Engine:
         """
         self.current_level = new_lvl
         self.load(load.get_levels()[new_lvl])
+        self.update_all()
 
     def load(self, name):
         """
@@ -94,6 +112,7 @@ class Engine:
         self.scene.level(self.level)
         # For direct moves
         self.program.direction = int(self.scene.robot.direction)
+        self.update_all()
 
     def check_sound(self):
         # TODO Mute sound in all modules
@@ -108,15 +127,7 @@ class Engine:
         :return:
         """
         self.scene.level(self.level)
-
-    def blit(self):
-        self.display.blit(self.controls, self.controls.rect)
-        self.display.blit(self.program, self.program.rect)
-        self.display.blit(self.scene, self.scene.rect)
-
-        if self.pause:
-            self.display.blit(self.menu, self.menu.rect)
-            # TODO Maybe Blur effect in pause
+        self.update_all()
 
     def event(self):
         for event in pygame.event.get():
@@ -203,23 +214,23 @@ class Engine:
         self.clock.tick()
 
     def run(self):
-        self.blit()
         self.pause = True
-        # To Draw All
-        pygame.display.flip()
+        self.update_all()
         while True:
-            self.blit()
             if self.scene.launch:
-                self.scene.step(self.clock.tick())
-                self.clock.tick()
+                self.scene.step(self.clock.tick(FPS))
                 self.scene.update()
             self.event()
 
             if self.scene.done and not self.scene.success:
                 print("And you failed :)")
                 self.reload()
+            elif self.scene.done and self.scene.success:
+                print("WP")
+                self.reload()
+                self.pause = True
+
             self.update()
-            # TODO FPS LOCK
 
     def exit(self):
         self.pause = True

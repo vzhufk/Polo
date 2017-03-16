@@ -120,6 +120,12 @@ class Menu(surface.Surface):
         self.group.add(self.level_opt)
         self.group.add(cont_opt, about_opt, sound_opt, exit_opt)
 
+    def event(self, mouse):
+        surface.Surface.event(self, mouse)
+        # Fade out when cursor is out of menu
+        if not self.is_in(mouse.get_pos()) and self.was_hover is not None:
+            self.make()
+
     def make(self):
         """
         Handles all events

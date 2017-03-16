@@ -10,7 +10,7 @@ size = (varibles.screen_resolution[0], 0.75 * varibles.screen_resolution[1])
 color = [14, 14, 14]
 
 speed_up = 5
-time = 500
+time = 1000
 
 background_music = "background.wav"
 background_music_volume = 0.15

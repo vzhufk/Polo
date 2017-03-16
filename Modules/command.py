@@ -49,10 +49,12 @@ class Command(Sprite):
         if self.countable:
             if self.hover:
                 text = self.big_font.render(str(self.amount), 2, (0, 0, 0))
-                surf.blit(text, (self.rect.width - 32, 0))
+                text_size = self.big_font.size(str(self.amount))
+                surf.blit(text, ((self.rect.width - text_size[0]) / 2, (self.rect.height - text_size[1]) / 2))
             else:
                 text = self.font.render(str(self.amount), 2, (0, 0, 0))
-                surf.blit(text, (self.rect.width - font.size, 0))
+                text_size = self.font.size(str(self.amount))
+                surf.blit(text, (self.rect.width - text_size[0], 0))
         self.image = surf
 
     def delta_direction(self, delta):
