@@ -60,7 +60,6 @@ class Engine:
         if self.pause:
             self.display.blit(self.menu, self.menu.rect)
             # TODO Maybe Blur effect in pause
-
         pygame.display.flip()
 
     def update(self):
@@ -72,14 +71,15 @@ class Engine:
         if self.pause:
             self.display.blit(self.menu, self.menu.rect)
             pygame.display.update(self.menu.rect)
-        elif self.program.is_in(mouse) or self.controls.is_in(mouse):
-            self.display.blit(self.controls, self.controls.rect)
-            self.display.blit(self.program, self.program.rect)
-            pygame.display.update(self.program.rect)
-            pygame.display.update(self.controls.rect)
-        elif self.scene.is_in(mouse) or self.scene.launch:
-            self.display.blit(self.scene, self.scene.rect)
-            pygame.display.update(self.scene.rect)
+        else:
+            if self.program.is_in(mouse) or self.controls.is_in(mouse):
+                self.display.blit(self.controls, self.controls.rect)
+                self.display.blit(self.program, self.program.rect)
+                pygame.display.update(self.program.rect)
+                pygame.display.update(self.controls.rect)
+            if self.scene.is_in(mouse) or self.scene.launch:
+                self.display.blit(self.scene, self.scene.rect)
+                pygame.display.update(self.scene.rect)
 
     def get_level(self):
         """

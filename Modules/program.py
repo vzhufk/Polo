@@ -150,12 +150,11 @@ class Program(surface.Surface):
 
         # Turn all in program when turn deleted
         if len(self.program) > 0 and (str(tmp) == "left" or str(tmp) == "right"):
-            self.program[0].direction = self.direction
-            for i in range(1, len(self.program)):
+            for i in range(0, len(self.program)):
                 if str(self.program[i]) == "forward" or str(self.program[i]) == "back":
-                    self.program[i].set_direction(self.program[i - 1].direction + self.get_delta_direction(i - 1, i))
-            if not str(self.program[0]) == "forward" and not str(self.program[0]) == "back":
-                self.program[0].direction = 0
+                    self.program[i].set_direction(self.direction + self.get_delta_direction(0, i))
+                else:
+                    self.program[i].set_direction(0)
 
     def get_program(self, start=0, end=None):
         """

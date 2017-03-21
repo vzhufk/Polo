@@ -11,7 +11,6 @@ sec_color = (106, 106, 106)
 
 class Controls(surface.Surface):
     def __init__(self, pos=position, s=size):
-
         self.current_direction = 0
         self.direction = 0
         # Hover
@@ -19,17 +18,14 @@ class Controls(surface.Surface):
 
         self.forward = Command("forward", (command.width / 2, command.height / 2))
         self.back = Command("back", (command.width / 2, command.height / 2 + command.height))
-
         self.right = Command("right", (command.width / 2 + command.width, command.height / 2))
         self.left = Command("left", (command.width / 2 + command.width, command.height / 2 + command.height))
-
         self.lo = Command("lo", (command.width / 2 + 2 * command.width, command.height / 2))
         self.op = Command("op", (command.width / 2 + 2 * command.width, command.height / 2 + command.height))
-
         # Because it calls update
         surface.Surface.__init__(self, pos, s)
 
-        self.group.add(self.left, self.right, self.forward, self.back, self.lo, self.op)
+        self.group.add(self.forward, self.back, self.left, self.right, self.lo, self.op)
 
     def update(self):
         surface.Surface.update(self)
@@ -70,6 +66,11 @@ class Controls(surface.Surface):
         """
         self.forward.direction = self.current_direction
         self.back.direction = self.current_direction
+        self.left.direction = self.current_direction
+        self.right.direction = self.current_direction
+
+        self.left.update()
+        self.right.update()
         self.forward.update()
         self.back.update()
         self.update()
