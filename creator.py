@@ -16,6 +16,7 @@ if int(say) == 2:
 
 run = True
 while run:
+
     say = input(">(1) Add tile\n"
                 ">(2) Change command\n"
                 ">(3) Polo placement\n"

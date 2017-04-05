@@ -19,6 +19,7 @@ class RawTile:
     Raw tile class
     Because Tile that extends pygame.sprite cant be pickled
     """
+
     def __init__(self, kind, place):
         self.type = kind
         self.location = tile_location + kind + tile_expansion
@@ -91,3 +92,5 @@ class Level:
         :return:
         """
         self.direction = d
+
+        # TODO Add str method and use it in creator
