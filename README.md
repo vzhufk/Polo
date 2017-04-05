@@ -1,5 +1,5 @@
 # Polo
-Game using pygame
+Game using pygame    
 Installation: https://github.com/zhufyakvv/Polo/wiki/Installation
 # Game mechanics 
 You have robot, and some avaliable commands for him. Your target - program him, to move from start to finish.
