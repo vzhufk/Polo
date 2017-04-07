@@ -135,7 +135,7 @@ class Engine:
                 self.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    self.exit()
+                    self.pause = not self.pause
 
             if self.pause:
                 self.menu.event(pygame.mouse)
