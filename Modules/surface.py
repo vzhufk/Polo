@@ -59,7 +59,7 @@ class Surface(pygame.Surface):
                 result.append(i)
         return result
 
-    def event(self, mouse):
+    def event(self, mouse, event):
         """
         Mouse press event. Return sprites which was clicked
         :param mouse: pygame.mouse
@@ -70,7 +70,7 @@ class Surface(pygame.Surface):
         if self.is_in(mouse.get_pos()):
             self.hover = (self.collide_all(mouse.get_pos()))
             self.mouse = mouse
-            if mouse.get_pressed()[0] or mouse.get_pressed()[2]:
+            if event.type == pygame.MOUSEBUTTONUP:
                 self.echo = self.hover
             self.make()
 

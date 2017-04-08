@@ -147,12 +147,12 @@ class Engine:
                         self.update_all()
 
             if self.pause:
-                self.menu.event(pygame.mouse)
+                self.menu.event(pygame.mouse, event)
             else:
                 if not self.scene.launch:
-                    self.controls.event(pygame.mouse)
-                    self.program.event(pygame.mouse)
-                    self.scene.event(pygame.mouse)
+                    self.controls.event(pygame.mouse, event)
+                    self.program.event(pygame.mouse, event)
+                    self.scene.event(pygame.mouse, event)
 
                 # I can just change time in scene to speed up
                 if self.scene.launch and pygame.mouse.get_pressed()[0]:

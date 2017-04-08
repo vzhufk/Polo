@@ -1,5 +1,6 @@
-import varibles
+import pygame
 
+import varibles
 from Libraries import load
 from Modules import surface
 from Modules.robot import Robot
@@ -72,7 +73,7 @@ class Scene(surface.Surface):
         """
         self.program = program
 
-    def event(self, mouse):
+    def event(self, mouse, event):
         """
         Events on scene
         :param mouse: pygame.mouse
@@ -81,7 +82,7 @@ class Scene(surface.Surface):
         self.echo = None
         result = []
         if self.is_in(mouse.get_pos()):
-            if mouse.get_pressed()[0]:
+            if event.type == pygame.MOUSEBUTTONUP:
                 if self.robot.collision(self.on_surface(mouse.get_pos())):
                     result.append(self.robot)
                 for i in self.group:
