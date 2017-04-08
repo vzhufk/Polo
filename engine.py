@@ -57,7 +57,6 @@ class Engine:
 
         if self.pause:
             self.display.blit(self.menu, self.menu.rect)
-            # TODO Maybe Blur effect in pause
         if self.alert:
             self.display.blit(self.message, self.message.rect)
         pygame.display.flip()
