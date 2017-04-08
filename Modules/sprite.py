@@ -36,13 +36,13 @@ class Sprite(pygame.sprite.Sprite):
         """
         return self.get_name()
 
-    def load_image(self, image_path):
+    def load_image(self, image_path, key=-1):
         """
         Loads some image into sprite
         :param image_path: path to image
         :return:
         """
-        self.image, rect = image(image_path, -1)
+        self.image, rect = image(image_path, key)
         # self.rect.width, self.rect.height = rect.width, rect.height
 
     def set_font(self, some_font):

@@ -26,7 +26,8 @@ class Surface(pygame.Surface):
         self.update()
 
     def update(self):
-        self.fill(self.color)
+        if self.color is not None:
+            self.fill(self.color)
         self.group.draw(self)
 
     def is_in(self, point):
