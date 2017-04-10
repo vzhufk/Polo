@@ -11,6 +11,7 @@ from Modules.menu import Menu
 from Modules.program import Program
 from Modules.scene import Scene
 from level import Level
+from message import Message
 
 FPS = varibles.FPS
 window_title = varibles.window_title
@@ -23,6 +24,8 @@ class Engine:
         pygame.init()
         # Engine pause
         self.pause = False
+        # Talk
+        self.talk = False
         # Set up of window
         os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (0, 30)
         # Window title
@@ -41,6 +44,7 @@ class Engine:
         self.program = Program()
         self.scene = Scene()
         self.menu = Menu()
+        self.message = Message()
 
     def update_all(self):
         """
@@ -51,7 +55,9 @@ class Engine:
         self.display.blit(self.program, self.program.rect)
         self.display.blit(self.scene, self.scene.rect)
 
-        if self.pause:
+        if self.talk:
+            self.display.blit(self.message, self.message.rect)
+        elif self.pause:
             self.display.blit(self.menu, self.menu.rect)
         pygame.display.flip()
 
@@ -61,7 +67,10 @@ class Engine:
         :return:
         """
         mouse = pygame.mouse.get_pos()
-        if self.pause:
+        if self.talk:
+            self.display.blit(self.message, self.message.rect)
+            pygame.display.update(self.message.rect)
+        elif self.pause:
             self.display.blit(self.menu, self.menu.rect)
             pygame.display.update(self.menu.rect)
         else:
@@ -129,14 +138,11 @@ class Engine:
                 self.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    if self.intro:
-                        self.intro = False
-                        self.pause = True
-                    else:
-                        self.pause = not self.pause
-                        self.update_all()
-
-            if self.pause:
+                    self.pause = not self.pause
+                    self.update_all()
+            if self.talk:
+                self.message.event(pygame.mouse, event)
+            elif self.pause:
                 self.menu.event(pygame.mouse, event)
             else:
                 if not self.scene.launch:
@@ -155,6 +161,11 @@ class Engine:
         Invokes module calls
         :return:
         """
+        """Message Echo"""
+        if self.message.get_echo() is not None:
+            self.message_handler()
+            self.message.echo_out()
+
         """Controls Echos"""
         if self.controls.get_echo() is not None:
             self.program.add(self.controls.get_echo())
@@ -192,7 +203,22 @@ class Engine:
                 self.sound = i.switch_index == 1
                 self.check_sound()
             elif str(i) == "about":
-                varibles.about()
+                # TODO Replace it
+                self.message.set_text([
+                    "Hey friend!",
+                    "Nice to meet you.",
+                    "Go on :)"])
+                self.message.update()
+                self.talk = True
+                self.pause = False
+                self.update_all()
+                # varibles.about()
+
+    def message_handler(self):
+        self.talk = self.message.echo != "end"
+        if not self.talk:
+            self.update_all()
+            self.message.flush()
 
     def scene_handler(self):
         for i in self.scene.echo:

@@ -14,6 +14,10 @@ tile_default = "default"
 tile_expansion = ".png"
 
 
+# TODO Add Messages
+# TODO Some refactor thing
+
+
 class RawTile:
     """
     Raw tile class
