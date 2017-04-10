@@ -11,7 +11,6 @@ from Modules.menu import Menu
 from Modules.program import Program
 from Modules.scene import Scene
 from level import Level
-from message import Message
 
 FPS = varibles.FPS
 window_title = varibles.window_title
@@ -24,8 +23,6 @@ class Engine:
         pygame.init()
         # Engine pause
         self.pause = False
-        # Intro
-        self.alert = True
         # Set up of window
         os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (0, 30)
         # Window title
@@ -44,7 +41,6 @@ class Engine:
         self.program = Program()
         self.scene = Scene()
         self.menu = Menu()
-        self.message = Message()
 
     def update_all(self):
         """
@@ -57,8 +53,6 @@ class Engine:
 
         if self.pause:
             self.display.blit(self.menu, self.menu.rect)
-        if self.alert:
-            self.display.blit(self.message, self.message.rect)
         pygame.display.flip()
 
     def update(self):
@@ -67,10 +61,7 @@ class Engine:
         :return:
         """
         mouse = pygame.mouse.get_pos()
-        if self.alert:
-            self.display.blit(self.message, self.message.rect)
-            pygame.display.update(self.message.rect)
-        elif self.pause:
+        if self.pause:
             self.display.blit(self.menu, self.menu.rect)
             pygame.display.update(self.menu.rect)
         else:
@@ -138,8 +129,8 @@ class Engine:
                 self.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    if self.alert:
-                        self.alert = False
+                    if self.intro:
+                        self.intro = False
                         self.pause = True
                     else:
                         self.pause = not self.pause
@@ -226,23 +217,30 @@ class Engine:
         self.scene.start()
         self.clock.tick()
 
+    def intro(self, logo_path="Source/logo.png", bg_color=(0, 0, 0)):
+        size = (self.display.get_size()[0], self.display.get_size()[1])
+        surf = pygame.Surface(size)
+        surf.fill(bg_color)
+        image = load.image(logo_path)
+        surf.blit(image[0], ((size[0] - image[1].w) / 2, (size[1] - image[1].h) / 2))
+        surf.set_alpha(0)
+        for x in range(-225, 225):
+            self.display.fill(bg_color)  # or whatever your background color is
+            surf.set_alpha(225 - abs(x))
+            self.display.blit(surf, (0, 0))
+            pygame.display.flip()
+            pygame.time.delay(1 if x != 0 else 500)
+        pygame.time.delay(250)
+
     def run(self):
         self.pause = True
         self.clock.tick()
 
         # Intro
-        self.setup_intro()
-        while self.alert:
-            self.message.step(self.clock.tick(FPS))
-            self.message.update()
-            self.alert = self.message.launch
-            self.update()
-            self.event()
+        self.intro()
 
         self.update_all()
-
         while True:
-
             if self.scene.launch:
                 self.scene.step(self.clock.tick(FPS))
                 self.scene.update()
