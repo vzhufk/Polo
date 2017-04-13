@@ -5,10 +5,10 @@
 
 import pygame
 
-import varibles
+import variables
 
-position = (0.75 * varibles.screen_resolution[0], 0.75 * varibles.screen_resolution[1])
-size = (0.25 * varibles.screen_resolution[0], 0.75 * varibles.screen_resolution[1])
+position = (0.75 * variables.screen_resolution[0], 0.75 * variables.screen_resolution[1])
+size = (0.25 * variables.screen_resolution[0], 0.75 * variables.screen_resolution[1])
 color = (183, 183, 183)
 sec_color = (106, 106, 106)
 

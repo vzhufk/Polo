@@ -2,6 +2,7 @@
 # zhufyakvv@gmail.com
 # github.com/zhufyakvv
 # 19.01.2017
+import io
 import os
 import pickle
 
@@ -62,6 +63,17 @@ class Level:
         pickle.dump(self.__dict__, f, 2)
         f.close()
 
+    def delete_tile(self, place):
+        """
+        Deletes tile at some place
+        :param place: tuple
+        :return: 
+        """
+        place = (place[0] * tile[0], place[1] * tile[1])
+        for i in self.tiles:
+            if i.place == place:
+                self.tiles.pop(self.tiles.index(i))
+
     def add_tile(self, place, name=tile_default):
         """
         Add new tile on scene
@@ -91,10 +103,60 @@ class Level:
 
     def robot_direct(self, d):
         """
-        Direct robot
+        Direct robot    
         :param d: 0<=d<=3 Direction
         :return:
         """
         self.direction = d
 
         # TODO Add str method and use it in creator
+
+
+# TODO Unpickle Make it string
+class Voice:
+    def __init__(self, level_name="", lang="en"):
+        self.name = level_name
+        self.lang = lang
+        self.start = []
+        self.end = []
+
+    def add_start(self, text):
+        self.start.append(text)
+
+    def add_end(self, text):
+        self.end.append(text)
+
+    def load(self):
+        """
+        Loads level from file
+        :return:
+        """
+        try:
+            with io.open(location + self.lang + "/" + self.name + expansion, 'r', encoding='utf-8') as f:
+                # tmp_dict = pickle.load(f)
+                # f.close()
+                # self.__dict__.update(tmp_dict)
+                s = str(f.read())
+                for i in s.split("\n"):
+                    if i[0] == "+":
+                        self.end.append(i[1:])
+                    elif i[0] == "-":
+                        self.start.append(i[1:])
+                f.close()
+
+        except FileNotFoundError:
+            pass
+
+    # TODO Refactor
+    def save(self):
+        """
+        Saves level
+        :return:
+        """
+        with io.open(location + self.lang + "/" + self.name + expansion, 'w', encoding='utf-8') as f:
+            # pickle.dump(self.__dict__, f, 2)
+            for i in self.start:
+                f.write("-" + i)
+            for i in self.end:
+                f.write("+" + i)
+            f.close()

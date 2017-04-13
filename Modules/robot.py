@@ -3,7 +3,6 @@
 # github.com/zhufyakvv
 # 14.01.2017
 
-import Source.font as font
 from Libraries import load
 from Libraries.load import *
 from Modules import sprite
@@ -39,7 +38,6 @@ class Robot(sprite.Sprite):
         self.original = self.image
         self.fx = float(self.rect.x)
         self.fy = float(self.rect.y)
-        self.set_font(font.medium)
         self.direction = 2
 
     def flush(self):

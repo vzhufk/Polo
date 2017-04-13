@@ -8,6 +8,41 @@ import engine
 import level
 
 
+def change_voice():
+    global current
+    voice = level.Voice(current.name)
+    say = input("Set language...")
+    voice.lang = say
+    try:
+        voice.load()
+    except FileNotFoundError:
+        voice.save()
+        voice.load()
+
+    while True:
+        say = int(input("(1) Add start phrase \n"
+                        "(2) Add end phrase \n"
+                        "(0) Exit\n>"))
+
+        if say == 1:
+            phrase = input("Set phrase for start...")
+            voice.add_start(phrase)
+        elif say == 2:
+            phrase = input("Set phrase for end...")
+            voice.add_end(phrase)
+        else:
+            break
+    voice.save()
+
+
+def delete_tile():
+    global current
+    print(">Delete...")
+    x = input(">Set x...")
+    y = input(">Set y...")
+    current.delete_tile((int(x), int(y)))
+
+
 def add_tile():
     # TODO Output field
 
@@ -62,17 +97,23 @@ if int(say) == 2:
 run = True
 while run:
     say = input(">(1) Add tile\n"
-                ">(2) Change command\n"
-                ">(3) Polo placement\n"
+                ">(2) Delete tile\n"
+                ">(3) Change command\n"
+                ">(4) Polo placement\n"
+                ">(5) Add Voice\n"
                 ">(0) Exit\n>")
 
     if int(say) == 1:
         add_tile()
     elif int(say) == 2:
-        command_cfg()
+        delete_tile()
     elif int(say) == 3:
+        command_cfg()
+    elif int(say) == 4:
         robot_place()
-    elif int(say) == 0:
+    elif int(say) == 5:
+        change_voice()
+    else:
         run = False
 
 q = input(">Save?(1-0)\n>")

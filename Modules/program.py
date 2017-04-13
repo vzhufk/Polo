@@ -1,14 +1,13 @@
 import pygame
 
-import varibles
+import variables
 from Libraries.decode import decode
 from Modules import command
 from Modules import surface
 from Modules.command import Command
-from Source import font
 
-position = (0, 0.75 * varibles.screen_resolution[1])
-size = (0.75 * varibles.screen_resolution[0], 0.25 * varibles.screen_resolution[1])
+position = (0, 0.75 * variables.screen_resolution[1])
+size = (0.75 * variables.screen_resolution[0], 0.25 * variables.screen_resolution[1])
 text_color = (0, 0, 0)
 color = (200, 200, 200)
 sec_color = (106, 106, 106)
@@ -22,15 +21,13 @@ class Program(surface.Surface):
         self.rect = pygame.Rect(pos[0], pos[1], s[0], s[1])
         self.group = pygame.sprite.Group()
         self.color = c
-        self.font = None
+        self.font = variables.font_heavy
         self.echo = None
         # End of special needs
-
         self.direction = 0
 
         self.page_prev = Command("prev_page", (0, command.height))
         self.page_next = Command("next_page", (size[0] - command.width, command.height))
-        self.set_font(font.heavy)
         self.listing_counter = None
         self.program = []
         self.page = 0

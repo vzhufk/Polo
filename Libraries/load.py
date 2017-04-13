@@ -3,7 +3,7 @@ from os.path import isfile, join
 
 import pygame
 
-import varibles
+import variables
 
 
 def image(name, color_key=None):
@@ -61,6 +61,6 @@ def sound(name):
     return sound
 
 
-def get_levels(path=varibles.level_path):
+def get_levels(path=variables.level_path):
     path = os.getcwd() + path
     return [f for f in os.listdir(path) if isfile(join(path, f))]

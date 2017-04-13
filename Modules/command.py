@@ -1,4 +1,3 @@
-import Source.font as font
 from Libraries.load import *
 from Modules.sprite import Sprite
 
@@ -23,8 +22,8 @@ class Command(Sprite):
         Sprite.__init__(self, name, placement, s)
         image_path = image_path if image_path is not None else def_location + name + expansion
         self.load_image(image_path)
-        self.set_font(font.medium)
-        self.big_font = font.shaded
+        self.set_font(variables.font_medium)
+        self.big_font = variables.font_shaded
         # Original start ima
         self.original = self.image
         # Counting on command

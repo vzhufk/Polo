@@ -4,14 +4,13 @@
 # 11.02.2017
 import pygame
 
-import varibles
+import variables
 from Libraries import load
 from Modules import sprite
 from Modules import surface
-from Source import font
 
-position = (25, 0.3 * varibles.screen_resolution[1])
-size = (varibles.screen_resolution[0] - 50, 0.25 * varibles.screen_resolution[1])
+position = (25, 0.3 * variables.screen_resolution[1])
+size = (variables.screen_resolution[0] - 50, 0.25 * variables.screen_resolution[1])
 
 color = (183, 183, 183)
 sec_color = (106, 106, 106)
@@ -73,7 +72,7 @@ class OptionText(sprite.Sprite):
         self.caption_place = text_place
         self.switch = switch
         self.flick = False
-        self.set_font(font.heavy)
+        self.set_font(variables.font_heavy)
         self.update()
 
     def update(self):
@@ -101,7 +100,7 @@ class Menu(surface.Surface):
         surface.Surface.__init__(self, pos, s, c)
         self.level_group = pygame.sprite.Group()
         self.current_level = level
-        self.levels = load.get_levels(varibles.level_path)
+        self.levels = load.get_levels(variables.level_path)
         self.was_hover = None
         self.active = True
 

@@ -4,19 +4,20 @@ import sys
 import pygame
 
 import Libraries.load as load
-import sprite
-import varibles
+import variables
 from Modules.controls import Controls
 from Modules.menu import Menu
+from Modules.message import Message
 from Modules.program import Program
 from Modules.scene import Scene
-from level import Level
-from message import Message
+from level import Level, Voice
 
-FPS = varibles.FPS
-window_title = varibles.window_title
-screen_resolution = varibles.screen_resolution
-screen_mode = varibles.screen_mode
+FPS = variables.FPS
+window_title = variables.window_title
+screen_resolution = variables.screen_resolution
+screen_mode = variables.screen_mode
+
+language = variables.language
 
 
 class Engine:
@@ -32,6 +33,10 @@ class Engine:
         pygame.display.set_caption(window_title)
         # Set up window resolution
         self.display = pygame.display.set_mode(screen_resolution)  # pygame.FULLSCREEN
+        # Icon
+        icon = load.image("Source/Prop/polo.png")
+        if icon is not None:
+            pygame.display.set_icon(icon[0])
         # Sets level
         self.current_level = 1
         # Clock init for ticks
@@ -45,6 +50,7 @@ class Engine:
         self.scene = Scene()
         self.menu = Menu()
         self.message = Message()
+        self.voice = Voice()
 
     def update_all(self):
         """
@@ -114,9 +120,14 @@ class Engine:
         self.scene.level(self.level)
         # For direct moves
         self.program.direction = int(self.scene.robot.direction)
+
+        """Voice"""
+        self.voice = Voice(name, language)
+        self.voice.load()
+        """Setup"""
         # self.update_all()
 
-    # Add sound handler. All sounds plays here.
+    # TODO Add sound handler. All sounds plays here.
     def check_sound(self):
         # TODO Mute sound in all modules
         if self.sound:
@@ -140,6 +151,14 @@ class Engine:
                 if event.key == pygame.K_ESCAPE:
                     self.pause = not self.pause
                     self.update_all()
+                if event.key == pygame.K_SPACE:
+                    if self.talk:
+                        self.message.page += 1
+                    elif self.pause:
+                        self.pause = False
+                    else:
+                        self.setup_scene()
+
             if self.talk:
                 self.message.event(pygame.mouse, event)
             elif self.pause:
@@ -190,10 +209,16 @@ class Engine:
             self.menu_handler()
             self.menu.echo_out()
 
+    def play(self):
+        self.pause = False
+        """VOICE"""
+        self.set_message(self.voice.start)
+        self.talk = len(self.voice.start) > 0
+
     def menu_handler(self):
         for i in self.menu.get_echo():
             if str(i) == "play":
-                self.pause = False
+                self.play()
             elif str(i) == "exit":
                 self.exit()
             elif str(i) == "choose":
@@ -203,20 +228,16 @@ class Engine:
                 self.sound = i.switch_index == 1
                 self.check_sound()
             elif str(i) == "about":
-                # TODO Replace it
-                self.message.set_text([
-                    "Hey friend!",
-                    "Nice to meet you.",
-                    "Go on :)"])
-                self.message.update()
-                self.talk = True
-                self.pause = False
-                self.update_all()
-                # varibles.about()
+                variables.about()
+
+    def set_message(self, text):
+        self.message.set_text(text)
+        self.message.update()
+        self.update_all()
 
     def message_handler(self):
         self.talk = self.message.echo != "end"
-        if not self.talk:
+        if self.message.echo == "end":
             self.update_all()
             self.message.flush()
 
@@ -226,13 +247,6 @@ class Engine:
                 self.pause = True
             elif i.name == "polo":
                 self.setup_scene()
-
-    def setup_intro(self):
-        tmp = sprite.Sprite()
-        tmp.load_image("Source/logo.png", (0, 0, 0))
-        tmp.image = tmp.image.convert_alpha()
-        self.message.group.add(tmp)
-        self.message.update()
 
     def setup_scene(self):
         """
@@ -244,45 +258,62 @@ class Engine:
         self.clock.tick()
 
     def intro(self, logo_path="Source/logo.png", bg_color=(0, 0, 0)):
+        """
+        Game intro. Shows logo of my "studio" :D
+        :param logo_path: path to image
+        :param bg_color: background color
+        :return: 
+        """
         size = (self.display.get_size()[0], self.display.get_size()[1])
-        surf = pygame.Surface(size)
-        surf.fill(bg_color)
-        image = load.image(logo_path)
-        surf.blit(image[0], ((size[0] - image[1].w) / 2, (size[1] - image[1].h) / 2))
-        surf.set_alpha(0)
-        for x in range(-225, 225):
-            self.display.fill(bg_color)  # or whatever your background color is
-            surf.set_alpha(225 - abs(x))
-            self.display.blit(surf, (0, 0))
+        surface_intro = pygame.Surface(size)
+        surface_intro.fill(bg_color)
+        logo_image = load.image(logo_path)
+        surface_intro.blit(logo_image[0], ((size[0] - logo_image[1].w) / 2, (size[1] - logo_image[1].h) / 2))
+        surface_intro.set_alpha(0)
+        x = -225
+        clock = pygame.time.Clock()
+        while x < 225:
+            surface_intro.set_alpha(225 - abs(x))
+            self.display.fill(bg_color)
+            self.display.blit(surface_intro, (0, 0))
             pygame.display.flip()
-            pygame.time.delay(1 if x != 0 else 500)
-        pygame.time.delay(250)
+            clock.tick(FPS)
+            x += 3
 
     def run(self):
         self.pause = True
         self.clock.tick()
 
-        # Intro
+        """Intro"""
         self.intro()
-
         self.update_all()
         while True:
+            """Scene"""
             if self.scene.launch:
                 self.scene.step(self.clock.tick(FPS))
                 self.scene.update()
-            self.event()
-
+            """Scene result"""
             if self.scene.done and not self.scene.success:
-                print("And you failed :)")
                 self.reload()
             elif self.scene.done and self.scene.success:
-                print("WP")
+                self.set_message(self.voice.end)
+                self.talk = True
+                self.scene.done = False  # to get into next elif
+            elif not self.scene.done and self.scene.success and not self.talk:
                 self.reload()
                 self.pause = True
 
+            """Events"""
+            self.event()
+            """Update"""
             self.update()
 
     def exit(self):
         self.pause = True
         pygame.quit()
         sys.exit()
+
+
+e = Engine()
+e.load("1")
+e.run()

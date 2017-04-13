@@ -1,27 +1,26 @@
 import pygame
 
-import varibles
+import variables
 from Modules import command
 from Modules import sprite
 from Modules import surface
-from Source import font
-from command import Command
+from Modules.command import Command
 
-position = (0, 0.75 * varibles.screen_resolution[1])
-size = (varibles.screen_resolution[0], 0.25 * varibles.screen_resolution[1])
+position = (0, 0.75 * variables.screen_resolution[1])
+size = (variables.screen_resolution[0], 0.25 * variables.screen_resolution[1])
 text_color = (0, 0, 0)
 color = (200, 200, 200)
 sec_color = (106, 106, 106)
 text_color = (0, 0, 0)
-text_pos = (20, 20)
-line_length_limit = 60
+text_pos = (25, 25)
+line_length_limit = variables.message_line_length
 
 
 class MessageText(sprite.Sprite):
     def __init__(self, text="SAMPLE TEXT", place=(0, 0), s=size, t_p=text_pos):
         sprite.Sprite.__init__(self, text, place, s)
         self.text_pos = t_p
-        self.font = font.message_text
+        self.font = variables.font_message_text
         self.text = text
         self.update()
 
