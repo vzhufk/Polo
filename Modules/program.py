@@ -80,7 +80,7 @@ class Program(surface.Surface):
         Form values on current page of listing
         :return: self.group with commands and listing controls
         """
-        self.group = pygame.sprite.Group()
+        self.group.empty()
         self.group.add(self.page_next)
         self.group.add(self.page_prev)
 
@@ -114,7 +114,8 @@ class Program(surface.Surface):
                     index += i.rect.x / i.rect.w
                     self.delete(int(index) - 1)
                     # Right click - delete everything to the end of program
-                    if (self.mouse is not None and self.mouse.get_pressed()[2]) or str(i) == "lo":
+                    # TODO Refactor dis
+                    if self.mouse is not None and self.mouse.get_pressed()[2]:
                         for j in range(0, len(self.program) - int(index) + 1):
                             echo.append(self.program[len(self.program) - 1])
                             self.delete(len(self.program) - 1)
@@ -187,5 +188,6 @@ class Program(surface.Surface):
         Flushing all (do i use it?)
         :return:
         """
+        self.group.empty()
         self.program.clear()
         self.update()

@@ -63,7 +63,7 @@ class Message(surface.Surface):
         :return:
         """
         self.fill(self.color)
-        self.group = pygame.sprite.Group()
+        self.group.empty()
         self.group.add(self.page_next)
         if self.page < len(self.text):
             self.group.add(MessageText(self.text[self.page]))

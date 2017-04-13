@@ -125,6 +125,16 @@ class Menu(surface.Surface):
         if not self.is_in(mouse.get_pos()) and self.was_hover is not None:
             self.make()
 
+    def set_current_level(self, lvl):
+        """
+        Sets new level
+        :param lvl: index of level
+        :return: 
+        """
+        self.current_level = (lvl + len(self.levels)) % len(self.levels)
+        self.choose_opt.caption = self.levels[self.current_level]
+        self.choose_opt.update()
+
     def make(self):
         """
         Handles all events
@@ -162,6 +172,7 @@ class Menu(surface.Surface):
                 self.group.add(self.level_opt)
 
         # Level scroll
+        '''
         if self.echo is not None:
             for i in self.echo:
                 if i == self.next_opt:
@@ -169,4 +180,4 @@ class Menu(surface.Surface):
                     self.choose_opt.set_caption(self.levels[self.current_level])
                 elif i == self.prev_opt:
                     self.current_level -= 1 if self.current_level > 0 else 0
-                    self.choose_opt.set_caption(self.levels[self.current_level])
+                    self.choose_opt.set_caption(self.levels[self.current_level])'''

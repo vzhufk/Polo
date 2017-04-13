@@ -62,6 +62,7 @@ class Surface(pygame.Surface):
     def event(self, mouse, event):
         """
         Mouse press event. Return sprites which was clicked
+        :param event: pygame.event
         :param mouse: pygame.mouse
         :return: list of clicked sprites into self.echo
         """
@@ -70,7 +71,7 @@ class Surface(pygame.Surface):
         if self.is_in(mouse.get_pos()):
             self.hover = (self.collide_all(mouse.get_pos()))
             self.mouse = mouse
-            if event.type == pygame.MOUSEBUTTONUP:
+            if event.type == pygame.MOUSEBUTTONUP or self.mouse.get_pressed()[2]:
                 self.echo = self.hover
             self.make()
 
@@ -114,6 +115,6 @@ class Surface(pygame.Surface):
         Flush to start state
         :return:
         """
-        self.group = pygame.sprite.Group()
+        self.group.empty()
         self.hover = None
         self.echo = None

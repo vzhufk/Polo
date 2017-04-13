@@ -23,6 +23,8 @@ font_heavy = pygame.font.Font(orson_location + "SFOrsonCasualHeavy.ttf", int(1.5
 font_shaded = pygame.font.Font(orson_location + "SFOrsonCasualShaded.ttf", 2 * size)
 font_message_text = pygame.font.Font(ghost_location + "T-FLEXTypeB.ttf", int(1.6 * size))
 
+"""User"""
+user_config_file = "cfg"
 
 def about():
     out_about = "Polo \n" \

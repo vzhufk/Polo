@@ -6,6 +6,8 @@ import io
 import os
 import pickle
 
+import variables
+
 tile = (50, 50)
 image_expansion = ".png"
 location = "Levels/"
@@ -112,7 +114,6 @@ class Level:
         # TODO Add str method and use it in creator
 
 
-# TODO Unpickle Make it string
 class Voice:
     def __init__(self, level_name="", lang="en"):
         self.name = level_name
@@ -160,3 +161,16 @@ class Voice:
             for i in self.end:
                 f.write("+" + i)
             f.close()
+
+
+def save_current_level(index):
+    f = open(variables.user_config_file, "w")
+    f.write(str(int(index)))
+    f.close()
+
+
+def load_current_level():
+    f = open(variables.user_config_file, "r")
+    index = int(f.read())
+    f.close()
+    return index

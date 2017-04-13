@@ -10,7 +10,7 @@ from Modules.menu import Menu
 from Modules.message import Message
 from Modules.program import Program
 from Modules.scene import Scene
-from level import Level, Voice
+from level import Level, Voice, save_current_level, load_current_level
 
 FPS = variables.FPS
 window_title = variables.window_title
@@ -38,7 +38,8 @@ class Engine:
         if icon is not None:
             pygame.display.set_icon(icon[0])
         # Sets level
-        self.current_level = 1
+        self.current_level = 0
+        self.max_level = len(load.get_levels()) - 1
         # Clock init for ticks
         self.clock = pygame.time.Clock()
         # Level load
@@ -96,14 +97,29 @@ class Engine:
         """
         return self.current_level
 
+    def level_up(self):
+        """
+        Ups level
+        :return: 
+        """
+        self.current_level += 1 if self.current_level < self.max_level else -self.current_level
+
+    def level_down(self):
+        """
+        Ups level
+        :return: 
+        """
+        self.current_level -= 1 if self.current_level > 0 else -self.max_level
+
     def set_level(self, new_lvl):
         """
         Set level
         :param new_lvl: int index of level in list
         :return:
         """
-        self.current_level = new_lvl
-        self.load(load.get_levels()[new_lvl])
+        levels = load.get_levels()
+        self.current_level = (new_lvl + len(levels)) % len(levels)
+        self.load(levels[new_lvl])
         self.update_all()
 
     def load(self, name):
@@ -208,6 +224,10 @@ class Engine:
         if self.menu.get_echo() is not None:
             self.menu_handler()
             self.menu.echo_out()
+        """Level Changing"""
+        if self.menu.current_level != self.current_level:
+            self.menu.set_current_level(self.current_level)
+            self.menu.update()
 
     def play(self):
         self.pause = False
@@ -224,6 +244,12 @@ class Engine:
             elif str(i) == "choose":
                 self.load(i.caption)
                 self.update_all()
+            elif str(i) == "prev":
+                self.level_down()
+                self.update()
+            elif str(i) == "next":
+                self.level_up()
+                self.update()
             elif str(i) == "sound":
                 self.sound = i.switch_index == 1
                 self.check_sound()
@@ -300,8 +326,10 @@ class Engine:
                 self.talk = True
                 self.scene.done = False  # to get into next elif
             elif not self.scene.done and self.scene.success and not self.talk:
-                self.reload()
-                self.pause = True
+                self.level_up()
+                self.set_level(self.current_level)
+                self.play()
+                # self.pause = True
 
             """Events"""
             self.event()
@@ -310,6 +338,7 @@ class Engine:
 
     def exit(self):
         self.pause = True
+        save_current_level(self.current_level)
         pygame.quit()
         sys.exit()
 
@@ -317,5 +346,8 @@ class Engine:
 # If not imported -> called like main
 if __name__ == "__main__":
     e = Engine()
-    e.load("1")
+    try:
+        e.set_level(load_current_level())
+    except FileNotFoundError:
+        e.set_level(e.current_level)
     e.run()
