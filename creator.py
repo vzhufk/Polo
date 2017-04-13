@@ -4,8 +4,8 @@
 # 19.01.2017
 
 
-import engine
 import level
+from engine import Engine
 
 
 def change_voice():
@@ -121,6 +121,6 @@ if int(q) == 1:
     current.save()
 r = input(">Run?(1-0)\n>")
 if int(r) == 1:
-    e = engine.Engine()
+    e = Engine()
     e.load(current.name)
     e.run()

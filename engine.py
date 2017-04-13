@@ -314,6 +314,8 @@ class Engine:
         sys.exit()
 
 
-e = Engine()
-e.load("1")
-e.run()
+# If not imported -> called like main
+if __name__ == "__main__":
+    e = Engine()
+    e.load("1")
+    e.run()
