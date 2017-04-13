@@ -156,7 +156,7 @@ class Engine:
                         self.message.page += 1
                     elif self.pause:
                         self.pause = False
-                    else:
+                    elif not self.scene.launch:
                         self.setup_scene()
 
             if self.talk:

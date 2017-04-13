@@ -12,7 +12,7 @@ text_color = (0, 0, 0)
 color = (200, 200, 200)
 sec_color = (106, 106, 106)
 text_color = (0, 0, 0)
-text_pos = (25, 25)
+text_pos = (10, 20)
 line_length_limit = variables.message_line_length
 
 

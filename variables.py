@@ -13,14 +13,15 @@ level_path = r"/Levels/"
 language = "ua"  # "en"
 pygame.font.init()
 size = 16
-message_line_length = 85
+message_line_length = 70
 font_location = "Source/Fonts/"
 orson_location = font_location + "SFOrson/"
-aaargh_location = font_location + "Aaargh/"
+silver_location = font_location + "SilverAge/"
+ghost_location = font_location + "Ghost/"
 font_medium = pygame.font.Font(orson_location + "SFOrsonCasualMedium.ttf", size)
 font_heavy = pygame.font.Font(orson_location + "SFOrsonCasualHeavy.ttf", int(1.5 * size))
 font_shaded = pygame.font.Font(orson_location + "SFOrsonCasualShaded.ttf", 2 * size)
-font_message_text = pygame.font.Font(aaargh_location + "AaarghRegular.ttf", int(size))
+font_message_text = pygame.font.Font(ghost_location + "T-FLEXTypeB.ttf", int(1.6 * size))
 
 
 def about():
