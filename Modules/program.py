@@ -34,14 +34,6 @@ class Program(surface.Surface):
         self.max_page = 0
         self.delete_array = False
 
-        self.init()
-        self.update()
-
-    def init(self):
-        """
-        Init page listing
-        :return:
-        """
         self.page_next.uncountable()
         self.page_prev.uncountable()
         self.page_next.update()

@@ -224,6 +224,7 @@ class Engine:
         if self.menu.get_echo() is not None:
             self.menu_handler()
             self.menu.echo_out()
+
         """Level Changing"""
         if self.menu.current_level != self.current_level:
             self.menu.set_current_level(self.current_level)

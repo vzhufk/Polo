@@ -172,12 +172,3 @@ class Menu(surface.Surface):
                 self.group.add(self.level_opt)
 
         # Level scroll
-        '''
-        if self.echo is not None:
-            for i in self.echo:
-                if i == self.next_opt:
-                    self.current_level += 1 if self.current_level + 1 < len(self.levels) else 0
-                    self.choose_opt.set_caption(self.levels[self.current_level])
-                elif i == self.prev_opt:
-                    self.current_level -= 1 if self.current_level > 0 else 0
-                    self.choose_opt.set_caption(self.levels[self.current_level])'''
