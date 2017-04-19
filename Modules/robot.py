@@ -155,4 +155,4 @@ class Robot(sprite.Sprite):
         Shows if robot is still dying, or already dead.
         :return:
         """
-        return len(self.death_sprites) > self.death_sprite_current >= 0
+        return len(self.death_sprites) > int(self.death_sprite_current) >= 0

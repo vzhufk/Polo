@@ -99,25 +99,38 @@ class Menu(surface.Surface):
     def __init__(self, pos=position, s=size, level=0, c=color):
         surface.Surface.__init__(self, pos, s, c)
         self.level_group = pygame.sprite.Group()
-        self.current_level = level
+        self.lang_group = pygame.sprite.Group()
+        self.level = level
+        self.language = 0
         self.levels = load.get_levels(variables.level_path)
+        self.languages = load.get_languages(variables.level_path)
         self.was_hover = None
         self.active = True
 
         self.level_opt = OptionImage("level", (option_size[0], 0))
-        self.prev_opt = OptionImage("prev", (option_size[0], 100), option_little_size, (50, 0))
-        self.next_opt = OptionImage("next", (option_size[0], 0), option_little_size, (50, 0))
-        self.choose_opt = OptionText("choose", self.levels[self.current_level], (150, 50), (0, 15), option_little_size)
+        self.prev_level_opt = OptionImage("level_prev", (option_size[0], 100), option_little_size, (50, 0))
+        self.next_level_opt = OptionImage("level_next", (option_size[0], 0), option_little_size, (50, 0))
+        self.choose_level_opt = OptionText("level_choose", self.levels[self.level],
+                                           (option_size[0], option_size[1] / 3), (0, 15), option_little_size)
 
-        self.level_group.add(self.level_opt, self.prev_opt, self.next_opt, self.choose_opt)
+        self.level_group.add(self.level_opt, self.prev_level_opt, self.next_level_opt, self.choose_level_opt)
+
+        self.lang_opt = OptionImage("lang", (option_size[0] * 3, 0))
+        self.prev_lang_opt = OptionImage("lang_prev", (option_size[0] * 3, 100), option_little_size, (50, 0))
+        self.next_lang_opt = OptionImage("lang_next", (option_size[0] * 3, 0), option_little_size, (50, 0))
+        self.choose_lang_opt = OptionText("lang_choose", self.languages[self.language],
+                                          (option_size[0] * 3, option_size[1] / 3), (0, 15),
+                                          option_little_size)
+
+        self.lang_group.add(self.lang_opt, self.prev_lang_opt, self.next_lang_opt, self.choose_lang_opt)
 
         cont_opt = OptionImage("play", (0, 0), )
         sound_opt = OptionImage("sound", (option_size[0] * 2, 0), switch=True)
-        about_opt = OptionImage("about", (option_size[0] * 3, 0))
+
         exit_opt = OptionImage("exit", (option_size[0] * 4, 0))
 
-        self.group.add(self.level_opt)
-        self.group.add(cont_opt, about_opt, sound_opt, exit_opt)
+        self.group.add(self.level_opt, self.lang_opt)
+        self.group.add(cont_opt, sound_opt, exit_opt)
 
     def event(self, mouse, event):
         surface.Surface.event(self, mouse, event)
@@ -125,15 +138,25 @@ class Menu(surface.Surface):
         if not self.is_in(mouse.get_pos()) and self.was_hover is not None:
             self.make()
 
-    def set_current_level(self, lvl):
+    def set_level(self, lvl):
         """
         Sets new level
         :param lvl: index of level
         :return: 
         """
-        self.current_level = (lvl + len(self.levels)) % len(self.levels)
-        self.choose_opt.caption = self.levels[self.current_level]
-        self.choose_opt.update()
+        self.level = (lvl + len(self.levels)) % len(self.levels)
+        self.choose_level_opt.caption = self.levels[self.level]
+        self.choose_level_opt.update()
+
+    def set_language(self, lang):
+        """
+        Updates lang
+        :param lang: 
+        :return: 
+        """
+        self.language = (lang + len(self.languages)) % len(self.languages)
+        self.choose_lang_opt.caption = self.languages[self.language]
+        self.choose_lang_opt.update()
 
     def make(self):
         """
@@ -165,10 +188,24 @@ class Menu(surface.Surface):
                     if i == j:
                         level_hover = True
             if level_hover:
-                self.group.add(self.choose_opt, self.next_opt, self.prev_opt)
+                self.group.add(self.choose_level_opt, self.next_level_opt, self.prev_level_opt)
                 self.group.remove(self.level_opt)
             else:
-                self.group.remove(self.choose_opt, self.next_opt, self.prev_opt)
+                self.group.remove(self.choose_level_opt, self.next_level_opt, self.prev_level_opt)
                 self.group.add(self.level_opt)
 
-        # Level scroll
+        # Lang selector
+        if self.hover is not None:
+            lang_hover = False
+            for i in self.hover:
+                for j in self.lang_group:
+                    if i == j:
+                        lang_hover = True
+            if lang_hover:
+                self.group.add(self.choose_lang_opt, self.next_lang_opt, self.prev_lang_opt)
+                self.group.remove(self.lang_opt)
+            else:
+                self.group.remove(self.choose_lang_opt, self.next_lang_opt, self.prev_lang_opt)
+                self.group.add(self.lang_opt)
+
+                # Level scroll

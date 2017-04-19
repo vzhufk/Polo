@@ -10,7 +10,7 @@ screen_mode = pygame.FULLSCREEN
 level_path = r"/Levels/"
 
 """Fonts and Language"""
-language = "ua"  # "en"
+language = 0
 pygame.font.init()
 size = 16
 message_line_length = 70
@@ -25,6 +25,7 @@ font_message_text = pygame.font.Font(ghost_location + "T-FLEXTypeB.ttf", int(1.6
 
 """User"""
 user_config_file = "cfg"
+
 
 def about():
     out_about = "Polo \n" \

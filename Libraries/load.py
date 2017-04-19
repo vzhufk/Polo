@@ -1,5 +1,5 @@
 import os
-from os.path import isfile, join
+from os.path import isfile, join, isdir
 
 import pygame
 
@@ -12,7 +12,9 @@ def image(name, color_key=None):
         current = pygame.image.load(fullname)
     except pygame.error:
         print('Cannot load image:', name)
-        return None
+        current = pygame.surface.Surface((50, 50))
+        current.fill((255, 0, 0))
+        return current, current.get_rect()
     current = current.convert_alpha()
     if color_key is not None:
         if color_key is -1:
@@ -55,12 +57,17 @@ def sound(name):
         return NoneSound()
     fullname = name
     try:
-        sound = pygame.mixer.Sound(fullname)
+        current_sound = pygame.mixer.Sound(fullname)
     except pygame.error:
         print('Cannot load sound:', name)
-    return sound
+    return current_sound
 
 
 def get_levels(path=variables.level_path):
     path = os.getcwd() + path
     return [f for f in os.listdir(path) if isfile(join(path, f))]
+
+
+def get_languages(path=variables.level_path):
+    path = os.getcwd() + path
+    return [f for f in os.listdir(path) if isdir(join(path, f))]

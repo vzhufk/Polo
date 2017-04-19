@@ -10,7 +10,7 @@ from Modules.menu import Menu
 from Modules.message import Message
 from Modules.program import Program
 from Modules.scene import Scene
-from level import Level, Voice, save_current_level, load_current_level
+from level import Level, Voice, save_current, load_current
 
 FPS = variables.FPS
 window_title = variables.window_title
@@ -37,13 +37,18 @@ class Engine:
         icon = load.image("Source/Prop/polo.png")
         if icon is not None:
             pygame.display.set_icon(icon[0])
+        self.levels = load.get_levels()
+        self.languages = load.get_languages()
+        # Language
+        self.language = 0
+        self.max_lang = len(self.languages) - 1
         # Sets level
-        self.current_level = 0
-        self.max_level = len(load.get_levels()) - 1
+        self.level_index = 0
+        self.max_level = len(self.levels) - 1
         # Clock init for ticks
         self.clock = pygame.time.Clock()
         # Level load
-        self.level = Level(load.get_levels()[self.current_level])
+        self.level = Level(self.levels[self.level_index])
         # Sound
         self.sound = True
         self.controls = Controls()
@@ -95,40 +100,54 @@ class Engine:
         Returns current level
         :return:
         """
-        return self.current_level
+        return self.level_index
 
     def level_up(self):
         """
         Ups level
         :return: 
         """
-        self.current_level += 1 if self.current_level < self.max_level else -self.current_level
+        self.level_index += 1 if self.level_index < self.max_level else -self.level_index
 
     def level_down(self):
         """
         Ups level
         :return: 
         """
-        self.current_level -= 1 if self.current_level > 0 else -self.max_level
+        self.level_index -= 1 if self.level_index > 0 else -self.max_level
 
-    def set_level(self, new_lvl):
+    def set_up(self, new_lvl=None, lang=None):
         """
         Set level
+        :param lang: int index of language
         :param new_lvl: int index of level in list
         :return:
         """
-        levels = load.get_levels()
-        self.current_level = (new_lvl + len(levels)) % len(levels)
-        self.load(levels[new_lvl])
+        if new_lvl is None:
+            new_lvl = self.level_index
+        else:
+            self.level_index = (new_lvl + len(self.levels)) % len(self.levels)
+        if lang is not None:
+            self.language = (lang + len(self.languages)) % len(self.languages)
+        self.load(self.levels[new_lvl])
         self.update_all()
 
-    def load(self, name):
+    def get_lang(self):
+        return self.languages[self.language]
+
+    def lang_up(self):
+        self.language += 1 if self.language < self.max_lang else -self.max_lang
+
+    def lang_down(self):
+        self.language -= 1 if self.language > 0 else -self.max_lang
+
+    def load(self, level_name):
         """
         Load level to all modules
-        :param name:
+        :param level_name:
         :return:
         """
-        self.level = Level(name)
+        self.level = Level(level_name)
         self.level.load()
         # Pass level to other modules
         self.program = Program()
@@ -137,11 +156,18 @@ class Engine:
         # For direct moves
         self.program.direction = int(self.scene.robot.direction)
 
-        """Voice"""
-        self.voice = Voice(name, language)
+        self.load_voice(level_name)
+
+    def load_voice(self, level_name=None):
+        """
+        Load voice
+        :param level_name: name of level
+        :return: 
+        """
+        if level_name is None:
+            level_name = self.levels[self.level_index]
+        self.voice = Voice(level_name, self.get_lang())
         self.voice.load()
-        """Setup"""
-        # self.update_all()
 
     # TODO Add sound handler. All sounds plays here.
     def check_sound(self):
@@ -226,8 +252,12 @@ class Engine:
             self.menu.echo_out()
 
         """Level Changing"""
-        if self.menu.current_level != self.current_level:
-            self.menu.set_current_level(self.current_level)
+        if self.menu.level != self.level_index:
+            self.menu.set_level(self.level_index)
+            self.menu.update()
+        """Language Changing"""
+        if self.menu.language != self.language:
+            self.menu.set_language(self.language)
             self.menu.update()
 
     def play(self):
@@ -242,14 +272,23 @@ class Engine:
                 self.play()
             elif str(i) == "exit":
                 self.exit()
-            elif str(i) == "choose":
+            elif str(i) == "level_choose":
                 self.load(i.caption)
                 self.update_all()
-            elif str(i) == "prev":
+            elif str(i) == "level_prev":
                 self.level_down()
                 self.update()
-            elif str(i) == "next":
+            elif str(i) == "level_next":
                 self.level_up()
+                self.update()
+            elif str(i) == "lang_choose":
+                self.load_voice()
+                self.update_all()
+            elif str(i) == "lang_prev":
+                self.lang_down()
+                self.update()
+            elif str(i) == "lang_next":
+                self.lang_up()
                 self.update()
             elif str(i) == "sound":
                 self.sound = i.switch_index == 1
@@ -328,7 +367,7 @@ class Engine:
                 self.scene.done = False  # to get into next elif
             elif not self.scene.done and self.scene.success and not self.talk:
                 self.level_up()
-                self.set_level(self.current_level)
+                self.set_up(self.level_index)
                 self.play()
                 # self.pause = True
 
@@ -339,7 +378,7 @@ class Engine:
 
     def exit(self):
         self.pause = True
-        save_current_level(self.current_level)
+        save_current(self.level_index, self.language)
         pygame.quit()
         sys.exit()
 
@@ -348,7 +387,8 @@ class Engine:
 if __name__ == "__main__":
     e = Engine()
     try:
-        e.set_level(load_current_level())
+        state = load_current()
+        e.set_up(state[0], state[1])
     except FileNotFoundError:
-        e.set_level(e.current_level)
+        e.set_up(e.level_index)
     e.run()
