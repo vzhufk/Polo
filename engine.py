@@ -41,7 +41,7 @@ class Engine:
         self.languages = load.get_languages()
         # Language
         self.language = 0
-        self.max_lang = len(self.levels) - 1
+        self.max_lang = len(self.languages) - 1
         # Sets level
         self.level_index = 0
         self.max_level = len(self.levels) - 1
@@ -116,16 +116,19 @@ class Engine:
         """
         self.level_index -= 1 if self.level_index > 0 else -self.max_level
 
-    def set_up(self, new_lvl, lang):
+    def set_up(self, new_lvl=None, lang=None):
         """
         Set level
         :param lang: int index of language
         :param new_lvl: int index of level in list
         :return:
         """
-
-        self.level_index = (new_lvl + len(self.levels)) % len(self.levels)
-        self.language = (lang + len(self.languages)) % len(self.languages)
+        if new_lvl is None:
+            new_lvl = self.level_index
+        else:
+            self.level_index = (new_lvl + len(self.levels)) % len(self.levels)
+        if lang is not None:
+            self.language = (lang + len(self.languages)) % len(self.languages)
         self.load(self.levels[new_lvl])
         self.update_all()
 
@@ -133,7 +136,7 @@ class Engine:
         return self.languages[self.language]
 
     def lang_up(self):
-        self.language += 1 if self.language < self.max_lang else 0
+        self.language += 1 if self.language < self.max_lang else -self.max_lang
 
     def lang_down(self):
         self.language -= 1 if self.language > 0 else -self.max_lang
@@ -165,7 +168,6 @@ class Engine:
             level_name = self.levels[self.level_index]
         self.voice = Voice(level_name, self.get_lang())
         self.voice.load()
-
 
     # TODO Add sound handler. All sounds plays here.
     def check_sound(self):
