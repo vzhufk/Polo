@@ -1,5 +1,5 @@
 import os
-from os.path import isfile, join
+from os.path import isfile, join, isdir
 
 import pygame
 
@@ -52,6 +52,7 @@ def load_sliced_sprite(filename, w, h):
 def sound(name):
     class NoneSound:
         def play(self): pass
+
     if not pygame.mixer:
         return NoneSound()
     fullname = name
@@ -65,3 +66,8 @@ def sound(name):
 def get_levels(path=variables.level_path):
     path = os.getcwd() + path
     return [f for f in os.listdir(path) if isfile(join(path, f))]
+
+
+def get_languages(path=variables.level_path):
+    path = os.getcwd() + path
+    return [f for f in os.listdir(path) if isdir(join(path, f))]

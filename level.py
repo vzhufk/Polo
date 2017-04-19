@@ -163,14 +163,16 @@ class Voice:
             f.close()
 
 
-def save_current_level(index):
+def save_current(level, lang):
     f = open(variables.user_config_file, "w")
-    f.write(str(int(index)))
+    f.write(str(int(level)) + '\n' + str(int(lang)))
     f.close()
 
 
-def load_current_level():
+def load_current():
     f = open(variables.user_config_file, "r")
-    index = int(f.read())
+    text = f.read().split()
+    level = int(text[0])
+    lang = int(text[1])
     f.close()
-    return index
+    return level, lang
