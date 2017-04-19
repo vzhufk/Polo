@@ -11,8 +11,8 @@ from engine import Engine
 def change_voice():
     global current
     voice = level.Voice(current.name)
-    say = input("Set language...")
-    voice.lang = say
+    command = input("Set language...")
+    voice.lang = command
     try:
         voice.load()
     except FileNotFoundError:
@@ -20,14 +20,14 @@ def change_voice():
         voice.load()
 
     while True:
-        say = int(input("(1) Add start phrase \n"
-                        "(2) Add end phrase \n"
-                        "(0) Exit\n>"))
+        command = int(input("(1) Add start phrase \n"
+                            "(2) Add end phrase \n"
+                            "(0) Exit\n>"))
 
-        if say == 1:
+        if command == 1:
             phrase = input("Set phrase for start...")
             voice.add_start(phrase)
-        elif say == 2:
+        elif command == 2:
             phrase = input("Set phrase for end...")
             voice.add_end(phrase)
         else:
@@ -48,14 +48,14 @@ def add_tile():
 
     x = int(input(">Set x location\n>"))
     y = int(input(">Set y location\n>"))
-    name = input(">Set type of tile: ('0' - default, '-1' - finish, 'custom_name' - custom) \n>")
+    tile_name = input(">Set type of tile: ('0' - default, '-1' - finish, 'custom_name' - custom) \n>")
     global current
-    if int(name) == 0:
+    if int(tile_name) == 0:
         current.add_tile((x, y))
-    elif int(name) == -1:
+    elif int(tile_name) == -1:
         current.add_tile((x, y), "finish")
     else:
-        current.add_tile((x, y), name)
+        current.add_tile((x, y), tile_name)
 
 
 def command_cfg():

@@ -12,7 +12,9 @@ def image(name, color_key=None):
         current = pygame.image.load(fullname)
     except pygame.error:
         print('Cannot load image:', name)
-        return None
+        current = pygame.surface.Surface((50, 50))
+        current.fill((255, 0, 0))
+        return current, current.get_rect()
     current = current.convert_alpha()
     if color_key is not None:
         if color_key is -1:
@@ -50,15 +52,14 @@ def load_sliced_sprite(filename, w, h):
 def sound(name):
     class NoneSound:
         def play(self): pass
-
     if not pygame.mixer:
         return NoneSound()
     fullname = name
     try:
-        sound = pygame.mixer.Sound(fullname)
+        current_sound = pygame.mixer.Sound(fullname)
     except pygame.error:
         print('Cannot load sound:', name)
-    return sound
+    return current_sound
 
 
 def get_levels(path=variables.level_path):
