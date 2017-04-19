@@ -10,7 +10,7 @@ screen_mode = pygame.FULLSCREEN
 level_path = r"/Levels/"
 
 """Fonts and Language"""
-language = "ua"  # "en"
+language = "en"  # "en"
 pygame.font.init()
 size = 16
 message_line_length = 70
