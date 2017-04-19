@@ -26,6 +26,7 @@ font_message_text = pygame.font.Font(ghost_location + "T-FLEXTypeB.ttf", int(1.6
 """User"""
 user_config_file = "cfg"
 
+
 def about():
     out_about = "Polo \n" \
                 "Created by Zhufyak V.V. \n" \

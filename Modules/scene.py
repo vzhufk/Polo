@@ -76,6 +76,7 @@ class Scene(surface.Surface):
     def event(self, mouse, event):
         """
         Events on scene
+        :param event: pygame.event
         :param mouse: pygame.mouse
         :return:
         """

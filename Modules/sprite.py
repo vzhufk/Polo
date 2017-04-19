@@ -39,6 +39,7 @@ class Sprite(pygame.sprite.Sprite):
     def load_image(self, image_path, key=-1):
         """
         Loads some image into sprite
+        :param key: color key
         :param image_path: path to image
         :return:
         """
@@ -99,7 +100,7 @@ class Sprite(pygame.sprite.Sprite):
         :param point: tuple
         :return: bool of collision
         """
-        return self.rect.collidepoint(point)
+        return self.rect.collidepoint(point[0], point[1])
 
     def collide_group(self, group):
         """
