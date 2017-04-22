@@ -196,10 +196,16 @@ class Engine:
                 if event.key == pygame.K_SPACE:
                     if self.talk:
                         self.message.page += 1
+                        if self.message.page >= len(self.message.text):
+                            self.talk = False
+                            self.message.page = 0
+                            self.update_all()
                     elif self.pause:
                         self.pause = False
                     elif not self.scene.launch:
                         self.setup_scene()
+                    elif self.scene.launch:
+                        self.scene.speed_up = True
 
             if self.talk:
                 self.message.event(pygame.mouse, event)
