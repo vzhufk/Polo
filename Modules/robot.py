@@ -11,11 +11,11 @@ height = 50
 width = 50
 size = (50, 50)
 name = "polo"
-death = "long_explosion"
+death = "explosion"
 def_location = "Source/Prop/"
 expansion = ".png"
 
-sound_explosion = "bam-motherfucker.wav"
+sound_explosion = "bam.wav"
 sound_volume = 0.4
 # Direction - clock like
 # 0 - top
